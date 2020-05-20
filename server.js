@@ -11,7 +11,7 @@ var methodOverride = require('method-override');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 app.set('trust proxy', 1);
 
