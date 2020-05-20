@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DocDoc</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/png" href="/static/img/favicon.png">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+	<link rel="stylesheet" href="/static/css/sesion.css">
+</head>
+<body>
+	<div class="main">
+		<div id="logo">
+			<a href="/">
+				<img src="/static/img/favicon.png" alt="DocDoc">
+			</a>
+		</div>
+
+		<div class="video local mini">
+			<video id="videoLocal" autoplay></video>
+		</div>
+		<div class="video remote">
+			<video id="videoRemote" autoplay></video>
+		</div>
+
+		<div id="select" class="signal">
+			Sleccione
+			<select name="user" id="user">
+				<option value="">Sleccione</option>
+				<option value="coach">Usuario 1</option>
+				<option value="client">Usuario 2</option>
+			</select>
+		</div>
+
+		
+		<div id="coach" class="signal" style="display:none">
+			<div class="enableroom">
+				<p>Bienvenid@ por favor haz click en el siguiente botón para habilitar la sala.</p>
+				<button id="enableRoom" class="btn success">Habilitar sala</button>
+			</div>
+			<div class="waitfor" style="display:none;">
+				<p> Esperando a: <b>Usuario 2</b></p>
+			</div>
+		</div>
+		
+		<div id="client" class="signal" style="display:none">
+			<div class="waitfor">
+				<p> Esperando a: Usuario 1</p>
+			</div>
+			<div class="startCall" style="display:none;">
+				<p>El Usuario 1 te espera.</p>
+				<button id="startCall" class="btn success">Entrar a la sala</button>
+			</div>
+		</div>
+
+		<div id="botones">
+			<div>
+				<button id="btnMicro" disabled> 
+					<span class="icon-microphone" disabled></span> 
+				</button>
+			</div>
+			<div>
+				<button id="btnHungup" class="close" disabled>
+					<span class="icon-cross" disabled></span> 
+				</button>
+			</div>
+			<div>
+				<button id="btnVideo" disabled> 
+					<span class="icon-video-camera" ></span> 
+				</button>
+			</div>
+		</div>
+
+		<div id="signalingArea" style=""></div>
+	</div>
+    
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+	<script>
+
+		var SIGNAL_ROOM = "room_webrtc";
+		var me = {
+			id: '10',
+			name: 'Usuario 1',
+			type: 'client',
+			status: 'disable'
+		};
+		var other = {
+			id: '11',
+			name: 'Usuario 2',
+			type: 'coach',
+			status: 'disable'
+		};
+
+
+		var typeUser = document.querySelector('#user');
+		typeUser.addEventListener('change', function(){
+			var value = document.querySelector('#user').value;
+			if( value == 'coach'){
+				me = other;
+				document.querySelector('#coach').style.display = 'block';
+			}else if(value == 'client'){
+				document.querySelector('#client').style.display = 'block';
+			}
+
+			document.querySelector('#select').style.display = 'none';
+			init();
+
+		});
+
+	</script>
+	<script src="/static/js/sesion.js"></script>
+</body>
+</html>
