@@ -100,9 +100,11 @@ io.sockets.on('connection', function(socket){
 
     socket.on('call', function(data){
         socket.to(data.signal_room).emit('call_start', data.signal_room);
+        socket.emit('call_start', data.signal_room);
     });
 
     socket.on('signal', function(data){
+        console.log("signal: " + data.type);
         socket.to(data.room).emit('signaling_message', {
             type: data.type,
             message: data.message

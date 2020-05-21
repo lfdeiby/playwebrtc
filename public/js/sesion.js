@@ -50,7 +50,7 @@ function init(){
         btnEnableRoom.addEventListener('click', enableRoomAction);
     }else{
         var btnStartCall = document.getElementById('startCall');
-        btnStartCall.addEventListener('click', putReadyState);
+        btnStartCall.addEventListener('click', startCall);
     }
 
     if( me.type == 'client' ){
@@ -95,11 +95,10 @@ io.on('problemas', function(data){
 });
 
 
-// El usuario 2 empieza la llamada con el emtodo putReadyState
+// El usuario 2 empieza la llamada con el emtodo startCall
 
-function putReadyState(){
+function startCall(){
     io.emit('call', {"signal_room": SIGNAL_ROOM});
-    startSignaling();
 }
 
 let makingOffer = false;
