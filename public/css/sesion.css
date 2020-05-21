@@ -133,6 +133,7 @@ button{
 }
 #signalingArea{
     background: #EFEFEF;
+    opacity: .8;
     color: #333;
     position: absolute;
     z-index: 10;

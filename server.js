@@ -104,12 +104,12 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('signal', function(data){
-        console.log("signal: " + data.type);
-        socket.to(data.room).emit('signaling_message', {
+        //console.log("signal: " + data);
+        socket.to(data.room).emit('signaling_message', { data }); /*
             type: data.type,
             message: data.message
         });
-        
+        */
     });
 });
 

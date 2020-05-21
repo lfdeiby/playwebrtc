@@ -87,6 +87,7 @@ io.on('join', function(data) {
 });
 
 io.on('call_start', function(data){
+    displaySignalMessage("Start Signal Process");
     startSignaling();
 })
 
@@ -101,17 +102,17 @@ function startCall(){
     io.emit('call', {"signal_room": SIGNAL_ROOM});
 }
 
-let makingOffer = false;
-let ignoreOffer = false;
+var makingOffer = false;
+var ignoreOffer = false;
 
-io.on('signaling_message', async (data) => {
+io.on('signaling_message', async ({data: {description, candidate}}) => {
 
-    displaySignalMessage("Signal received: " + data.type);
+    displaySignalMessage("Signal received");
 
     try{
-        if (data.type == "description" && data.message ) {
+        if (description){ //data.type == "description" && data.message ) {
 
-            var description = data.message;
+            //var description = data.message;
             const offerCollision = (description.type == 'offer') && (makingOffer || pc.signalingState != 'stable');
             ignoreOffer = !polite && offerCollision;
             if( ignoreOffer )
@@ -128,16 +129,19 @@ io.on('signaling_message', async (data) => {
 
             if( description.type == "offer" ){
                 await pc.setLocalDescription();
+                io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
+                /*
                 io.emit('signal', {
                     'type': 'description',
                     'message': pc.localDescription,
                     'room': SIGNAL_ROOM
                 });
+                */
             }
             
-        }else if( data.type == 'candidate' && data.message ){
+        }else if(candidate){ //} data.type == 'candidate' && data.message ){
             try{
-                var candidate = JSON.parse(data.message.candidate);
+                //var candidate = JSON.parse(data.message.candidate);
                 console.log("CANDIDATE", candidate);
                 await pc.addIceCandidate(candidate);
             }catch(err){
@@ -158,45 +162,56 @@ function startSignaling() {
 
     pc = new RTCPeerConnection(config);
 
+    for (const track of localStream.getTracks()) {
+      pc.addTrack(track, localStream);
+    }
+    
+
     if( polite == false ){
         dataChannel = pc.createDataChannel('chat', null);
         dataChannel.onopen = function(){
             if( dataChannel.readyState == 'open' ){
                 displaySignalMessage("Data Channel is ready");
                 dataChannel.onmessage = dataChannelMessage;
+                dataChannel.onclose = function(){ displaySignalMessage("Remote close conection"); closePeerConnection(); }
             }
         }
     }else {
         pc.ondatachannel = function(event){
             dataChannel = event.channel;
             dataChannel.onmessage = dataChannelMessage;
+            dataChannel.onclose = function(){ displaySignalMessage("Remote close conection"); closePeerConnection(); }
         }
     }
     
     pc.onicecandidate = (event) => {
-        if (event.candidate)
+        if (event.candidate){
             displaySignalMessage("Signal send: " + event.candidate);
             console.log("signal send:",  event.candidate);
-            io.emit('signal', {
+            io.emit('signal', {candidate: event.candidate, room: SIGNAL_ROOM});
+            /*
                 "type": 'candidate',
                 "message": {
                     candidate: JSON.stringify(event.candidate)
                 },
                 "room":SIGNAL_ROOM
-            }
-        );
-        displaySignalMessage("completed that ice candidate..." + event.target.iceGatheringState);
+            });
+            */
+        }
+        //displaySignalMessage("completed that ice candidate..." + event.target.iceGatheringState);
     };
     
     pc.onnegotiationneeded = async () => {
         try{
             makingOffer = true;
             await pc.setLocalDescription();
-            io.emit('signal', {
+            io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
+            /*
                 'type': 'description',
                 'message': pc.localDescription,
                 "room":SIGNAL_ROOM
             });
+            */
         }catch(err){
             console.log(err);
         }finally{
@@ -212,14 +227,33 @@ function startSignaling() {
     };
     
     // once remote stream arrives, show it in the remote video element
+    /*
     pc.onaddstream =  function (event) {
         videoRemote.srcObject = event.stream;
         signalingFinalizeSuccess();
         console.log("recibiendo el stream");
     };
+    */
+    
+    pc.ontrack = ({track, streams}) => {
+        // once media for a remote track arrives, show it in the remote video element
+        track.onunmute = () => {
+            // don't set srcObject again if it is already set.
+            if (videoRemote.srcObject) return;
+            videoRemote.srcObject = streams[0];
+        };
+        signalingFinalizeSuccess();
+    };
+
+    
+
+    pc.onerror = function(err){
+        displaySignalMessage("PC ERROR: " + err.message);
+        console.log(err);
+    }
     
     // get a local stream, show it in our video tag and add it to be sent
-    pc.addStream(localStream);
+    //pc.addStream(localStream);
 
     function dataChannelMessage(data){
         console.log("datachannelReceive", data);
@@ -237,6 +271,9 @@ async function start(){
         localStream = stream;
         videoLocal.autoplay = true;
         videoLocal.muted = true;
+
+        
+
         videoLocal.srcObject = stream;
         document.querySelector('.local').classList.add('active');
     } catch(err) {
@@ -279,7 +316,8 @@ function toggleMicrophoneAction(){
 
 function hungupAction(){
     if( pc !== null ){
-
+        displaySignalMessage("Send close connection");
+        closePeerConnection();
     }
     return false;
 }
@@ -299,6 +337,17 @@ function toggleVideoAction(){
         }
     }
     return false;
+}
+
+function closePeerConnection(){
+    if( pc != null ){
+        pc.close();
+    }
+
+    pc = null;
+    dataChannel = null;
+    makingOffer = false;
+    ignoreOffer = false;
 }
 
 function displaySignalMessage(message) {
