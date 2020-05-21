@@ -153,7 +153,8 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
                 console.log("CANDIDATE", candidate);
                 await pc.addIceCandidate(candidate);
             }catch(err){
-                console.log(err.message);
+                console.log(candidate);
+                displaySignalMessage(err.message);
                 if(!ignoreOffer){
                     throw err;
                 }
