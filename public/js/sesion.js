@@ -105,7 +105,6 @@ io.on('problemas', function(data){
 
 
 // El usuario 2 empieza la llamada con el emtodo startCall
-
 function startCall(){
     io.emit('call', {"signal_room": SIGNAL_ROOM});
 }
@@ -118,8 +117,7 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
     displaySignalMessage("Signal received");
 
     try{
-        if (description){ //data.type == "description" && data.message ) {
-
+        if (description){
             //var description = data.message;
             const offerCollision = (description.type == 'offer') && (makingOffer || pc.signalingState != 'stable');
             ignoreOffer = !polite && offerCollision;
@@ -136,24 +134,18 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
             }
 
             if( description.type == "offer" ){
-                await pc.setLocalDescription();
+                const answer = await pc.createAnswer();
+                console.log("ANSWER", answer);
+                await pc.setLocalDescription(answer);
                 io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
-                /*
-                io.emit('signal', {
-                    'type': 'description',
-                    'message': pc.localDescription,
-                    'room': SIGNAL_ROOM
-                });
-                */
-            }
+              }
             
-        }else if(candidate){ //} data.type == 'candidate' && data.message ){
+        }else if(candidate){
             try{
-                //var candidate = JSON.parse(data.message.candidate);
-                console.log("CANDIDATE", candidate);
+                //console.log("CANDIDATE", candidate);
                 await pc.addIceCandidate(candidate);
             }catch(err){
-                console.log(candidate);
+                console.log("ERROR CANDIDATE", candidate);
                 displaySignalMessage(err.message);
                 if(!ignoreOffer){
                     throw err;
@@ -174,7 +166,6 @@ function startSignaling() {
     for (const track of localStream.getTracks()) {
       pc.addTrack(track, localStream);
     }
-    
 
     if( polite == false ){
         dataChannel = pc.createDataChannel('chat', null);
@@ -198,31 +189,22 @@ function startSignaling() {
             displaySignalMessage("Signal send: " + event.candidate);
             console.log("signal send:",  event.candidate);
             io.emit('signal', {candidate: event.candidate, room: SIGNAL_ROOM});
-            /*
-                "type": 'candidate',
-                "message": {
-                    candidate: JSON.stringify(event.candidate)
-                },
-                "room":SIGNAL_ROOM
-            });
-            */
         }
-        //displaySignalMessage("completed that ice candidate..." + event.target.iceGatheringState);
     };
     
     pc.onnegotiationneeded = async () => {
+
         try{
-            makingOffer = true;
-            await pc.setLocalDescription();
-            io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
-            /*
-                'type': 'description',
-                'message': pc.localDescription,
-                "room":SIGNAL_ROOM
-            });
-            */
+            if( polite == false ){
+                makingOffer = true;
+                const offer = await pc.createOffer();
+                if (pc.signalingState != "stable") return;
+                console.log("MAKE OFFERT", offer);
+                await pc.setLocalDescription(offer);
+                io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
+            }
         }catch(err){
-            console.log(err);
+            console.log("OFFER", err);
         }finally{
             makingOffer = false;
         }
@@ -280,9 +262,6 @@ async function start(){
         localStream = stream;
         videoLocal.autoplay = true;
         videoLocal.muted = true;
-
-        
-
         videoLocal.srcObject = stream;
         document.querySelector('.local').classList.add('active');
     } catch(err) {
