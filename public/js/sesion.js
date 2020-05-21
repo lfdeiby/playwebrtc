@@ -18,7 +18,15 @@ var config = {
             'url': 'stun:stun.deiby.xyz:5349'
         },
         {
+            'url': 'stun:stun.deiby.xyz:3478'
+        },
+        {
             urls: 'turn:turn.deiby.xyz:5349',
+            username: 'guest',
+            credential: 'mipassword'
+        },
+        {
+            urls: 'turn:turn.deiby.xyz:3478',
             username: 'guest',
             credential: 'mipassword'
         }
