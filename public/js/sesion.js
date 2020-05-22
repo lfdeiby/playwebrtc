@@ -13,6 +13,26 @@ btnVideo.addEventListener('click', toggleVideoAction);
 
 var localStream;
 var config = {
+    iceServers: [
+        {
+            urls: [ "stun:sp-turn1.xirsys.com" ]
+        }, 
+        {
+            username: "QZnwvjPLo6gHW-s7AWLLl_3XqTiUQMQTReHxgyMyy0FwI3rU-XBCEAFxkc6MxIrpAAAAAF7HR6tsZmRlaWJ5",
+            credential: "c8e5a8ee-9bdc-11ea-9f7e-0242ac140004",
+            urls: [
+               "turn:sp-turn1.xirsys.com:80?transport=udp",
+               "turn:sp-turn1.xirsys.com:3478?transport=udp",
+               "turn:sp-turn1.xirsys.com:80?transport=tcp",
+               "turn:sp-turn1.xirsys.com:3478?transport=tcp",
+               "turns:sp-turn1.xirsys.com:443?transport=tcp",
+               "turns:sp-turn1.xirsys.com:5349?transport=tcp"
+            ]
+        }
+    ]
+};
+/*
+var config = {
     'iceServers': [
         {
             'url': 'stun:stun.deiby.xyz:5349'
@@ -32,6 +52,7 @@ var config = {
         }
     ]
 };
+*/
 var configMediaStream = {
     audio: true, 
     video: {
@@ -119,7 +140,11 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
     try{
         if (description){
             //var description = data.message;
+            console.log("DESCRIPTION.TYPE: ", description.type);
+            console.log("PC.SIGNALINGSTATE: ", pc.signalingState);
+            console.log("MAKINGOFFER: ", makingOffer);
             const offerCollision = (description.type == 'offer') && (makingOffer || pc.signalingState != 'stable');
+            console.log("OFFERCOLLISION: ", offerCollision);
             ignoreOffer = !polite && offerCollision;
             if( ignoreOffer )
                 return;
@@ -191,6 +216,10 @@ function startSignaling() {
             io.emit('signal', {candidate: event.candidate, room: SIGNAL_ROOM});
         }
     };
+
+    pc.oniceconnectionstatechange= (event) => {
+        console.log("ICE CHANGE ", event);
+    }
     
     pc.onnegotiationneeded = async () => {
 
