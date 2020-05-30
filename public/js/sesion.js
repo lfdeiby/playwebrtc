@@ -226,9 +226,8 @@ function startSignaling() {
             pc.createOffer()
             .then(function(offer){
                 if (pc.signalingState != "stable") return;
-                return pc.setLocalDescription(offer);
                 console.log("MAKE OFFERT", offer);
-                await pc.setLocalDescription(offer);
+                return pc.setLocalDescription(offer);
             })
             .then(function(){
                 io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
@@ -302,7 +301,7 @@ function startSignaling() {
 
 // Metodo para arrancar la camara
 async function start(){
-    const stream = await navigator.mediaDevices.getUserMedia(configMediaStream).
+    const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
     .then(function(stream){
         localStream = stream;
         videoLocal.autoplay = true;
