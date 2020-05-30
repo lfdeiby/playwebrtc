@@ -212,7 +212,6 @@ function startSignaling() {
     pc.onicecandidate = (event) => {
         if (event.candidate){
             displaySignalMessage("Signal send: " + event.candidate);
-            console.log("signal send:",  event.candidate);
             io.emit('signal', {candidate: event.candidate, room: SIGNAL_ROOM});
         }
     };
@@ -221,9 +220,25 @@ function startSignaling() {
         console.log("ICE CHANGE ", event);
     }
     
-    pc.onnegotiationneeded = async () => {
+    pc.onnegotiationneeded = () => {
+        if( polite == false ){
+            makingOffer = true;
+            pc.createOffer()
+            .then(function(offer){
+                if (pc.signalingState != "stable") return;
+                return pc.setLocalDescription(offer);
+                console.log("MAKE OFFERT", offer);
+                await pc.setLocalDescription(offer);
+            })
+            .then(function(){
+                io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
+            })
+            .catch(function(err){
+                displaySignalMessage("ERROR OFFER", err.message);
+            });
+        }
 
-        try{
+        /* try{
             if( polite == false ){
                 makingOffer = true;
                 const offer = await pc.createOffer();
@@ -237,6 +252,7 @@ function startSignaling() {
         }finally{
             makingOffer = false;
         }
+        */
     }
 
     pc.oniceconnectionstatechange = (evt) => {
@@ -257,7 +273,7 @@ function startSignaling() {
     
     pc.ontrack = ({track, streams}) => {
         // once media for a remote track arrives, show it in the remote video element
-        track.onunmute = () => {
+        track.onunmute = function(){
             // don't set srcObject again if it is already set.
             if (videoRemote.srcObject) return;
             videoRemote.srcObject = streams[0];
@@ -286,17 +302,17 @@ function startSignaling() {
 
 // Metodo para arrancar la camara
 async function start(){
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia(configMediaStream);
+    const stream = await navigator.mediaDevices.getUserMedia(configMediaStream).
+    .then(function(stream){
         localStream = stream;
         videoLocal.autoplay = true;
         videoLocal.muted = true;
         videoLocal.srcObject = stream;
         document.querySelector('.local').classList.add('active');
-    } catch(err) {
-        alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+    }).catch(function(err) {
+         alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
         console.error(err.message);
-    }
+    });
 }
 // Envia un mensaje por dataChannel
 function send(text){
