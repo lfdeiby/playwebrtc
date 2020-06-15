@@ -12,6 +12,7 @@ btnHungup.addEventListener('click', hungupAction);
 btnVideo.addEventListener('click', toggleVideoAction);
 
 var localStream;
+/*
 var config = {
     iceServers: [
         {
@@ -31,7 +32,7 @@ var config = {
         }
     ]
 };
-/*
+*/
 var config = {
     'iceServers': [
         {
@@ -52,7 +53,7 @@ var config = {
         }
     ]
 };
-*/
+
 var configMediaStream = {
     audio: true, 
     video: {
@@ -220,7 +221,7 @@ function startSignaling() {
         console.log("ICE CHANGE ", event);
     }
     
-    pc.onnegotiationneeded = () => {
+    pc.onnegotiationneeded = function(){
         if( polite == false ){
             makingOffer = true;
             pc.createOffer()
@@ -254,7 +255,7 @@ function startSignaling() {
         */
     }
 
-    pc.oniceconnectionstatechange = (evt) => {
+    pc.oniceconnectionstatechange = function(evt){
         displaySignalMessage("ICE connection state change: " + evt.target.iceConnectionState);
         if (pc.iceConnectionState === "failed") {
             pc.restartIce();
@@ -312,6 +313,20 @@ async function start(){
          alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
         console.error(err.message);
     });
+
+    /*
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia(configMediaStream);
+        localStream = stream;
+        videoLocal.autoplay = true;
+        videoLocal.muted = true;
+        videoLocal.srcObject = stream;
+        document.querySelector('.local').classList.add('active');
+    } catch(err) {
+        alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+        console.error(err.message);
+    }
+    */
 }
 // Envia un mensaje por dataChannel
 function send(text){
