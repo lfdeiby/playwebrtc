@@ -7,6 +7,14 @@ var btnMicro = document.querySelector('#btnMicro');
 var btnHungup = document.querySelector('#btnHungup');
 var btnVideo = document.querySelector('#btnVideo');
 
+var testplay = document.querySelector('#play');
+play.addEventListener('click', function(){
+    videoRemote.play();
+    displaySignalMessage("press Play button");
+})
+
+
+
 btnMicro.addEventListener('click', toggleMicrophoneAction);
 btnHungup.addEventListener('click', hungupAction);
 btnVideo.addEventListener('click', toggleVideoAction);
