@@ -129,7 +129,7 @@ button{
     left: 50%;
     transform: translateX(-50%);
     width: 400px;
-    z-index: 2;
+    z-index: 7;
 }
 #signalingArea{
     background: #EFEFEF;
