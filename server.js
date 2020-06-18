@@ -9,12 +9,12 @@ var methodOverride = require('method-override');
 
 
 var app = express();
-/*
+
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-*/
-var PORT = 3000;
 
+var PORT = 3000;
+/*
 var https = require('https');
 var fs = require('fs');
 var server = https.createServer({
@@ -23,6 +23,7 @@ var server = https.createServer({
     }, app
 );
 var io = require('socket.io')(server);
+*/
 
 app.set('trust proxy', 1);
 
