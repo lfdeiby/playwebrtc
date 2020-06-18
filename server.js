@@ -9,9 +9,20 @@ var methodOverride = require('method-override');
 
 
 var app = express();
+/*
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var PORT = process.env.PORT || 3000;
+*/
+var PORT = 3000;
+
+var https = require('https');
+var fs = require('fs');
+var server = https.createServer({
+        key: fs.readFileSync('server.key'),
+        cert: fs.readFileSync('server.cert')
+    }, app
+);
+var io = require('socket.io')(server);
 
 app.set('trust proxy', 1);
 
@@ -115,6 +126,6 @@ io.sockets.on('connection', function(socket){
 
 
 
-server.listen(PORT, function(){
+server.listen(PORT, '192.168.1.104', function(){
 	console.log('Server running in: localhost:' + PORT);
 });

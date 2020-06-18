@@ -9,11 +9,10 @@ var btnVideo = document.querySelector('#btnVideo');
 
 var testplay = document.querySelector('#play');
 play.addEventListener('click', function(){
+    send("hola btn play");
     videoRemote.play();
     displaySignalMessage("press Play button");
 })
-
-
 
 btnMicro.addEventListener('click', toggleMicrophoneAction);
 btnHungup.addEventListener('click', hungupAction);
@@ -245,22 +244,6 @@ function startSignaling() {
                 displaySignalMessage("ERROR OFFER", err.message);
             });
         }
-
-        /* try{
-            if( polite == false ){
-                makingOffer = true;
-                const offer = await pc.createOffer();
-                if (pc.signalingState != "stable") return;
-                console.log("MAKE OFFERT", offer);
-                await pc.setLocalDescription(offer);
-                io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
-            }
-        }catch(err){
-            console.log("OFFER", err);
-        }finally{
-            makingOffer = false;
-        }
-        */
     }
 
     pc.oniceconnectionstatechange = function(evt){
@@ -271,16 +254,16 @@ function startSignaling() {
     };
     
     // once remote stream arrives, show it in the remote video element
-    /*
     pc.onaddstream =  function (event) {
         videoRemote.srcObject = event.stream;
         signalingFinalizeSuccess();
         console.log("recibiendo el stream");
     };
-    */
+    
     
     pc.ontrack = ({track, streams}) => {
         // once media for a remote track arrives, show it in the remote video element
+        displaySignalMessage("Recibiendo stream");
         track.onunmute = function(){
             // don't set srcObject again if it is already set.
             if (videoRemote.srcObject) return;
@@ -301,10 +284,12 @@ function startSignaling() {
 
     function dataChannelMessage(data){
         console.log("datachannelReceive", data);
-        displaySignalMessage(data);
+        displaySignalMessage(data.data);
     }
 
 }
+
+
 
 /* METODS AUXILIARES */
 
@@ -321,20 +306,6 @@ async function start(){
          alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
         console.error(err.message);
     });
-
-    /*
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia(configMediaStream);
-        localStream = stream;
-        videoLocal.autoplay = true;
-        videoLocal.muted = true;
-        videoLocal.srcObject = stream;
-        document.querySelector('.local').classList.add('active');
-    } catch(err) {
-        alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-        console.error(err.message);
-    }
-    */
 }
 // Envia un mensaje por dataChannel
 function send(text){
@@ -354,9 +325,9 @@ function signalingFinalizeSuccess(){
 
 function toggleMicrophoneAction(){
     if( pc !== null ){
-        var streams = pc.getLocalStreams();
-        for( var stream of streams ){
-            for( var audioTrack of stream.getAudioTracks() ){
+        //var streams = pc.getLocalStreams();
+        //for( var stream of streams ){
+            for( var audioTrack of localStream.getAudioTracks() ){ // stream.getAudioTracks() ){
                 if( audioTrack.enabled ){
                     btnMicro.classList.add('active');
                 }else{
@@ -364,7 +335,7 @@ function toggleMicrophoneAction(){
                 }
                 audioTrack.enabled = !audioTrack.enabled;
             }
-        }
+        //}
     }
     return false;
 }
@@ -378,10 +349,14 @@ function hungupAction(){
 }
 
 function toggleVideoAction(){
+    displaySignalMessage("Togle video click");
+    
     if( pc !== null ){
-        var streams = pc.getLocalStreams();
-        for( var stream of streams ){
-            for( var videoTrack of stream.getVideoTracks() ){
+        // var streams = pc.getLocalStreams();
+        // displaySignalMessage("Streams: " + streams.length);
+        // for( var stream of streams ){
+            for( var videoTrack of localStream.getVideoTracks() ){ // stream.getVideoTracks() ){
+                displaySignalMessage("VideoTrack change: " + videoTrack.enabled.toString());
                 if( videoTrack.enabled ){
                     btnVideo.classList.add('active');
                 }else{
@@ -389,8 +364,10 @@ function toggleVideoAction(){
                 }
                 videoTrack.enabled = !videoTrack.enabled;
             }
-        }
+        // }
     }
+    
+    // localStream.getVideoTracks()[0].enabled = ! localStream.getVideoTracks()[0].enabled;
     return false;
 }
 
@@ -398,7 +375,6 @@ function closePeerConnection(){
     if( pc != null ){
         pc.close();
     }
-
     pc = null;
     dataChannel = null;
     makingOffer = false;
