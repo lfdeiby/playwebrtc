@@ -126,6 +126,6 @@ io.sockets.on('connection', function(socket){
 
 
 
-server.listen(PORT, '192.168.1.104', function(){
+server.listen(PORT, function(){
 	console.log('Server running in: localhost:' + PORT);
 });
