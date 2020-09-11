@@ -7,13 +7,12 @@ var nunjucks = require('nunjucks');
 var helmet = require('helmet');
 var methodOverride = require('method-override');
 
-
+var PORT = process.env.PORT || 3000;
 var app = express();
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var PORT = process.env.PORT || 3000;
 /*
 var https = require('https');
 var fs = require('fs');
@@ -24,7 +23,6 @@ var server = https.createServer({
 );
 var io = require('socket.io')(server);
 */
-
 app.set('trust proxy', 1);
 
 app.use(compression()); // Para comprimir ne gzip
@@ -64,7 +62,7 @@ io.sockets.on('connection', function(socket){
 
         let duplicate = false;
         if( clientsInRoom !== undefined ){
-            console.log(clientsInRoom.sockets);
+            //console.log(clientsInRoom.sockets);
             let sss = clientsInRoom.sockets;
             Object.keys(sss).forEach(function (item) {
                 const client = io.sockets.connected[item];
@@ -74,9 +72,9 @@ io.sockets.on('connection', function(socket){
             });
         }
         
-        if( duplicate ){
-            socket.emit('problemas', { message: MESSAGE_DUPLICATE } );
-        }else{
+        //if( duplicate ){
+        //    socket.emit('problemas', { message: MESSAGE_DUPLICATE } );
+        //}else{
             if( data.type == 'coach' /*numClients == 0*/ && duplicate == false ){
                 socket.user_id = data.user_id;
                 socket.user_type = data.type;
@@ -99,7 +97,7 @@ io.sockets.on('connection', function(socket){
                 name: data.name,
                 type: data.type
             });
-        }
+        //}
     });
 
     socket.on('client_reconect', function(data){
@@ -116,16 +114,9 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('signal', function(data){
-        //console.log("signal: " + data);
-        socket.to(data.room).emit('signaling_message', { data }); /*
-            type: data.type,
-            message: data.message
-        });
-        */
+        socket.to(data.room).emit('signaling_message', { data });
     });
 });
-
-
 
 server.listen(PORT, function(){
 	console.log('Server running in: localhost:' + PORT);

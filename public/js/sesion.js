@@ -1,5 +1,4 @@
 
-
 var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
 var signalingArea = document.querySelector("#signalingArea");
@@ -7,19 +6,11 @@ var btnMicro = document.querySelector('#btnMicro');
 var btnHungup = document.querySelector('#btnHungup');
 var btnVideo = document.querySelector('#btnVideo');
 
-var testplay = document.querySelector('#play');
-play.addEventListener('click', function(){
-    send("hola btn play");
-    videoRemote.play();
-    displaySignalMessage("press Play button");
-})
-
 btnMicro.addEventListener('click', toggleMicrophoneAction);
 btnHungup.addEventListener('click', hungupAction);
 btnVideo.addEventListener('click', toggleVideoAction);
 
 var localStream;
-/*
 var config = {
     iceServers: [
         {
@@ -39,27 +30,6 @@ var config = {
         }
     ]
 };
-*/
-var config = {
-    'iceServers': [
-        {
-            'url': 'stun:stun.deiby.xyz:5349'
-        },
-        {
-            'url': 'stun:stun.deiby.xyz:3478'
-        },
-        {
-            urls: 'turn:turn.deiby.xyz:5349',
-            username: 'guest',
-            credential: 'mipassword'
-        },
-        {
-            urls: 'turn:turn.deiby.xyz:3478',
-            username: 'guest',
-            credential: 'mipassword'
-        }
-    ]
-};
 
 var configMediaStream = {
     audio: true, 
@@ -73,7 +43,6 @@ var configMediaStream = {
 var pc;
 var dataChannel;
 var polite = false;
-
 var sdpConstraints = {
     offerToReceiveAudio: true,
     offerToReceiveVideo: true
@@ -101,9 +70,9 @@ function enableRoomAction(){
 }
 
 io.on('polite', function(data) {
+    polite = true;
     document.querySelector('.enableroom').style.display = 'none';
     document.querySelector('.waitfor').style.display = 'block';
-    polite = true;
     start();
     displaySignalMessage("Registrado como Polite <br>");
 });
@@ -132,7 +101,6 @@ io.on('problemas', function(data){
     alert(data.message);
 });
 
-
 // El usuario 2 empieza la llamada con el emtodo startCall
 function startCall(){
     io.emit('call', {"signal_room": SIGNAL_ROOM});
@@ -142,21 +110,13 @@ var makingOffer = false;
 var ignoreOffer = false;
 
 io.on('signaling_message', async ({data: {description, candidate}}) => {
-
     displaySignalMessage("Signal received");
-
     try{
         if (description){
-            //var description = data.message;
-            console.log("DESCRIPTION.TYPE: ", description.type);
-            console.log("PC.SIGNALINGSTATE: ", pc.signalingState);
-            console.log("MAKINGOFFER: ", makingOffer);
             const offerCollision = (description.type == 'offer') && (makingOffer || pc.signalingState != 'stable');
-            console.log("OFFERCOLLISION: ", offerCollision);
             ignoreOffer = !polite && offerCollision;
             if( ignoreOffer )
                 return;
-
             if (offerCollision) {
                 await Promise.all([
                     pc.setLocalDescription({type: "rollback"}),
@@ -165,20 +125,15 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
             } else {
                 await pc.setRemoteDescription(description);
             }
-
             if( description.type == "offer" ){
                 const answer = await pc.createAnswer();
-                console.log("ANSWER", answer);
                 await pc.setLocalDescription(answer);
                 io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
-              }
-            
+            }
         }else if(candidate){
             try{
-                //console.log("CANDIDATE", candidate);
                 await pc.addIceCandidate(candidate);
             }catch(err){
-                console.log("ERROR CANDIDATE", candidate);
                 displaySignalMessage(err.message);
                 if(!ignoreOffer){
                     throw err;
@@ -187,9 +142,9 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
         }
     }catch(err){
         console.log(err.message);
+        INFO.error_signaling(err.message);
     }
 });
-
 
 function startSignaling() {
     displaySignalMessage("starting signaling...");
@@ -217,24 +172,23 @@ function startSignaling() {
         }
     }
     
-    pc.onicecandidate = (event) => {
+    pc.onicecandidate = function(event){
         if (event.candidate){
             displaySignalMessage("Signal send: " + event.candidate);
             io.emit('signal', {candidate: event.candidate, room: SIGNAL_ROOM});
         }
     };
 
-    pc.oniceconnectionstatechange= (event) => {
-        console.log("ICE CHANGE ", event);
+    pc.oniceconnectionstatechange = function(event){
+        console.log("ICE CHANGE ", pc.iceConnectionState, event);
     }
     
     pc.onnegotiationneeded = function(){
         if( polite == false ){
             makingOffer = true;
-            pc.createOffer()
+            pc.createOffer(sdpConstraints)
             .then(function(offer){
                 if (pc.signalingState != "stable") return;
-                console.log("MAKE OFFERT", offer);
                 return pc.setLocalDescription(offer);
             })
             .then(function(){
@@ -248,51 +202,37 @@ function startSignaling() {
 
     pc.oniceconnectionstatechange = function(evt){
         displaySignalMessage("ICE connection state change: " + evt.target.iceConnectionState);
-        if (pc.iceConnectionState === "failed") {
+        if (pc != null && pc.iceConnectionState === "failed") {
             pc.restartIce();
         }
     };
-    
-    // once remote stream arrives, show it in the remote video element
+
     pc.onaddstream =  function (event) {
         videoRemote.srcObject = event.stream;
         signalingFinalizeSuccess();
-        console.log("recibiendo el stream");
     };
     
-    
     pc.ontrack = ({track, streams}) => {
-        // once media for a remote track arrives, show it in the remote video element
-        displaySignalMessage("Recibiendo stream");
-        track.onunmute = function(){
-            // don't set srcObject again if it is already set.
+        track.onunmute = () => {
             if (videoRemote.srcObject) return;
             videoRemote.srcObject = streams[0];
         };
         signalingFinalizeSuccess();
     };
 
-    
-
     pc.onerror = function(err){
         displaySignalMessage("PC ERROR: " + err.message);
         console.log(err);
     }
-    
-    // get a local stream, show it in our video tag and add it to be sent
-    //pc.addStream(localStream);
 
     function dataChannelMessage(data){
         console.log("datachannelReceive", data);
-        displaySignalMessage(data.data);
+        displaySignalMessage(data);
     }
 
 }
 
-
-
 /* METODS AUXILIARES */
-
 // Metodo para arrancar la camara
 async function start(){
     const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
@@ -303,7 +243,7 @@ async function start(){
         videoLocal.srcObject = stream;
         document.querySelector('.local').classList.add('active');
     }).catch(function(err) {
-         alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+        alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
         console.error(err.message);
     });
 }
@@ -325,17 +265,16 @@ function signalingFinalizeSuccess(){
 
 function toggleMicrophoneAction(){
     if( pc !== null ){
-        //var streams = pc.getLocalStreams();
-        //for( var stream of streams ){
-            for( var audioTrack of localStream.getAudioTracks() ){ // stream.getAudioTracks() ){
-                if( audioTrack.enabled ){
-                    btnMicro.classList.add('active');
-                }else{
-                    btnMicro.classList.remove('active');
-                }
-                audioTrack.enabled = !audioTrack.enabled;
+        for( var audioTrack of localStream.getAudioTracks() ){
+            if( audioTrack.enabled ){
+                btnMicro.classList.add('active');
+                INFO.microphone('deactive');
+            }else{
+                btnMicro.classList.remove('active');
+                INFO.microphone('active');
             }
-        //}
+            audioTrack.enabled = !audioTrack.enabled;
+        }
     }
     return false;
 }
@@ -349,25 +288,19 @@ function hungupAction(){
 }
 
 function toggleVideoAction(){
-    displaySignalMessage("Togle video click");
-    
     if( pc !== null ){
-        // var streams = pc.getLocalStreams();
-        // displaySignalMessage("Streams: " + streams.length);
-        // for( var stream of streams ){
-            for( var videoTrack of localStream.getVideoTracks() ){ // stream.getVideoTracks() ){
-                displaySignalMessage("VideoTrack change: " + videoTrack.enabled.toString());
-                if( videoTrack.enabled ){
-                    btnVideo.classList.add('active');
-                }else{
-                    btnVideo.classList.remove('active');
-                }
-                videoTrack.enabled = !videoTrack.enabled;
+        for( var videoTrack of localStream.getVideoTracks() ){
+            displaySignalMessage("VideoTrack change: " + videoTrack.enabled.toString());
+            if( videoTrack.enabled ){
+                btnVideo.classList.add('active');
+                INFO.video('deactive');
+            }else{
+                btnVideo.classList.remove('active');
+                INFO.video('active');
             }
-        // }
+            videoTrack.enabled = !videoTrack.enabled;
+        }
     }
-    
-    // localStream.getVideoTracks()[0].enabled = ! localStream.getVideoTracks()[0].enabled;
     return false;
 }
 
