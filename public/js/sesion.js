@@ -34,8 +34,9 @@ var config = {
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 640,
-        height: 480,
+        width: 360,
+        //width: 640,
+        //height: 480,
         frameRate: 15
     }
 };
