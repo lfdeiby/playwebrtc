@@ -80,6 +80,19 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/static/js/adapter.js"></script>
 	<script>
+		var config =  [
+			{% for item in token %}
+			{
+				url: '{{ item.url }}',
+				urls:  '{{ item.urls }}',
+				{% if item.username %}
+					username: '{{ item.username }}',
+					credential: '{{ item.credential }}'
+				{% endif %}
+			},
+			{% endfor %}
+		];
+
 
 		var SIGNAL_ROOM = "room_webrtc";
 		var me = {

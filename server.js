@@ -48,7 +48,18 @@ nunjucks.configure('views', {
 })
 
 app.get('/', function(req, res){
-    res.render('index.html');
+    const accountSid = 'AC08c974e15c6d582b34e82aeb43c4827e';
+    const authToken = '0e19040d4e7d556afbc7cf492c1495e7';
+    const client = require('twilio')(accountSid, authToken);
+
+    client.tokens.create().then(token =>{
+        const params = {
+            name: "Deiby",
+            token: token.iceServers
+        }
+ 
+        res.render('index.html', params);
+    });
 });
 
 
@@ -121,3 +132,11 @@ io.sockets.on('connection', function(socket){
 server.listen(PORT, function(){
 	console.log('Server running in: localhost:' + PORT);
 });
+
+/*
+TWILIO
+SID: SK0cd0193f14595f27925d62e1adfb7d2f
+key type: Standard
+Secret: LtWUz9gBN8Nk4ysFkXx3f10LsJqy3Vi2
+
+*/

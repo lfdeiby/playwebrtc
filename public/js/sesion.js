@@ -11,6 +11,7 @@ btnHungup.addEventListener('click', hungupAction);
 btnVideo.addEventListener('click', toggleVideoAction);
 
 var localStream;
+/*
 var config = {
     iceServers: [
         {
@@ -30,6 +31,7 @@ var config = {
         }
     ]
 };
+*/
 
 var configMediaStream = {
     audio: true, 
@@ -146,7 +148,8 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
         INFO.error_signaling(err.message);
     }
 });
-
+console.log("DESDE SESION:JS");
+console.log(config);
 function startSignaling() {
     displaySignalMessage("starting signaling...");
 
