@@ -53,6 +53,8 @@ app.get('/', function(req, res){
     const client = require('twilio')(accountSid, authToken);
 
     client.tokens.create().then(token =>{
+        console.log("------------------------");
+        console.log(token);
         const params = {
             name: "Deiby",
             token: token.iceServers
