@@ -1,0 +1,4 @@
+{
+    "watch": ["server.js", "views/", "controller/", "models/", "routes/", "mail/", "pdf/", "helper/", "middleware/", "pasarela/"],
+    "ext": "js, css, html"
+}

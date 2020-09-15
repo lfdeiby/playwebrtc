@@ -48,6 +48,7 @@ nunjucks.configure('views', {
 })
 
 app.get('/', function(req, res){
+    /*
     const accountSid = 'AC08c974e15c6d582b34e82aeb43c4827e';
     const authToken = '0e19040d4e7d556afbc7cf492c1495e7';
     const client = require('twilio')(accountSid, authToken);
@@ -62,6 +63,8 @@ app.get('/', function(req, res){
  
         res.render('index.html', params);
     });
+    */
+    res.render('index.html', {name:'', token:[]});
 });
 
 

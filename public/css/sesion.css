@@ -8,23 +8,47 @@ body{
     padding: 0px;
 }
 *{
-	box-sizing: border-box;
-	position: relative;
+    box-sizing: border-box;
+    position: relative;
 }
 :root{
-	--color-primary: #86dbc6;
-	--color-secondary: #003642;
-	--color-dark: #1b886e;
-	--color-back: #dff7f1;
-	--color-tierno: #caf1e8;
-	--color-light: #f2f6f5;
-	--color-border: #49ba9f;
-	--color-errores: #ff5f29;
-	--color-filter: #fffedf;
+    --color-primary: #86dbc6;
+    --color-secondary: #003642;
+    --color-dark: #1b886e;
+    --color-back: #dff7f1;
+    --color-tierno: #caf1e8;
+    --color-light: #f2f6f5;
+    --color-border: #49ba9f;
+    --color-errores: #ff5f29;
+    --color-filter: #fffedf;
 }
 a{
     display: inline-block;
     text-decoration: none;
+}
+.actions{
+    display: flex;
+    flex-flow: row nowrap;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 5;
+}
+.actions button{
+    align-items: center;
+    background: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-radius: 4px;
+    color: #0e2c38;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
+    height: 30px;
+    width: 30px;
+}
+.actions button.active{
+    background: var(--color-errores); /*rgba(0, 54, 66, 0.6);*/
+    color: #FFF;
 }
 #botones{
     position: absolute;
@@ -38,13 +62,13 @@ a{
     background: #FFF;
     border: 1.5px solid var(--color-dark);
     border-radius: 50%;
-    font-size: 20px;
-    height: 55px;
+    font-size: 16px;
+    height: 50px;
     display: flex;
-    margin: 0px 5px;
+    margin: 0px 3px;
     align-items: center;
     justify-content: center;
-    width: 55px;
+    width: 50px;
 }
 #botones button.close{
     background: var(--color-errores);
@@ -57,18 +81,18 @@ a{
     opacity: .3;
 }
 .btn{
-	background: var(--color-secondary);
-	border-radius: 4px;
-	border: none;
-	color: #FFF;
-	font-size: 13px;
-	padding: 10px 15px;
+    background: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+    border-radius: 4px;
+    color: #FFF;
+    font-size: 13px;
+    padding: 10px 15px;
 }
 .btn.success{
-	background: #86dbc6;
-	border: 1px solid var(--color-border);
-	color: var(--color-secondary);
-	font-weight: bold;
+    background: #86dbc6;
+    border: 1px solid var(--color-border);
+    color: var(--color-secondary);
+    font-weight: bold;
 }
 
 #btnMicro::after{
@@ -91,7 +115,7 @@ a{
     position: absolute;
     transform: rotate(-40deg);
     width: 30px;
-    /*z-index: -1;*/
+    z-index: -1;
 }
 #btnVideo.active::after{
     background: var(--color-dark);
@@ -105,17 +129,168 @@ button{
     cursor: pointer;
     outline: none;
 }
+.error{
+    color: #ffd8ca;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}
+.hide{
+    display: none;
+}
+.info{
+    border-radius: 6px;
+    color: #FFF;
+    font-size: 14px;
+    line-height: 1.2em;
+    overflow: hidden;
+    position: absolute;
+    top: 50px;
+    right: 15px;
+    width: 350px;
+    z-index: 2;
+}
+.info>div{
+    background: rgba(0, 54, 66, 0.55);
+    padding: 15px;
+}
+.info>div.main{
+    border-bottom: 1px solid #566a6a;
+    border-top: 1px solid #566a6a;
+}
+.info .btn{
+    background: transparent;
+    border: none;
+    color: #d9e1df;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0px;
+}
+.info .btn.save:hover{
+    color: #86dbc6;
+}
+.info .btn span{
+    display: inline-block;
+    font-size: 1.2em;
+    margin-top: -3px;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+.info .header{
+    font-size: 13px;
+}
+.info .header a{
+    color: #caf1e8;
+    font-weight: bold;
+}
+.info .header img{
+    border: 2px solid #FFF;
+    border-radius: 50%;
+    display: inline-block;
+    height: 80px;
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 80px;
+}
+.info .header .detail{
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(100% - 100px);
+}
+.info .header .name{
+    color: var(--color-tierno);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+.info .main>div{
+    margin-bottom: 7px;
+}
+.info .main>div:last-child{
+    margin-bottom: 0px;
+}
+.info #conclusiones{
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    padding: 7px;
+    width: 100%;
+}
+.info .success{
+    color: #86dbc6;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}
 #logo{
     position: absolute;
     top: 15px;
     left: 15px;
-    width: 40px;
+    width: 60px;
     z-index: 2;
+}
+#logo img{
+    width: 100%;
 }
 .main{
     background-image: linear-gradient(299deg, #bfffef, #ad9fe1);
     height: 100%;
     width: 100%;
+}
+.qz_item{
+    margin-bottom: 10px;
+}
+.qz_item .answer{
+    display: block;
+    margin-left: 15px;
+    margin-top: 5px;
+    text-transform: capitalize;
+}
+.receta,
+.info{
+    max-height: 88vh;
+    overflow: auto;
+}
+.popup{
+    background: rgba(0,0,0,.3);
+    position: fixed;
+    font-size: 13px;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    z-index: -2;
+    transition: all .2s lienar;
+}
+.popup.active{
+    opacity: 1;
+    z-index: 20;
+}
+.popup .content{
+    background: #FAFAFA;
+    border-radius: 7px;
+    padding: 10px 15px;
+    border-bottom: 2px solid #474747;
+    max-width: 500px;
+}
+.popup .close{
+    background: #444;
+    color: #FFF;
+    border-radius: 50%;
+    border: none;
+    padding: 8px 9px 6px 8px;
+    font-size: 10px;
+}
+.popup header{
+    border-bottom: 1px solid rgba(50,50,50,.1);
+    padding: 5px 0px;
+}
+.popup .main{
+    background: #FAFAFA;
 }
 .signal{
     background: rgba(0,0,0,.6);
@@ -129,19 +304,15 @@ button{
     left: 50%;
     transform: translateX(-50%);
     width: 400px;
-    z-index: 7;
+    z-index: 2;
 }
 #signalingArea{
     background: #EFEFEF;
-    font-size: 12px;
-    opacity: .8;
     color: #333;
     position: absolute;
     z-index: 10;
-    max-width: 200px;
-    max-height: 100%;
-    overflow: auto;
 }
+
 .video{
     background: #222;
     height: 100%;
@@ -153,7 +324,7 @@ button{
     justify-content: center;
     opacity: 0;
     transition: all .2s linear;
-    z-index: 5;
+    z-index: -1;
 }
 .video.active{
     opacity: 1;
@@ -166,9 +337,39 @@ button{
     left: 15px;
     height: 140px;
     overflow: hidden;
-    width: 120px;
-    z-index: 5;
+    width: 110px;
+    z-index: 3;
 }
 .video video{
     min-height: 100%;
+    max-width: 100%;
+}
+@media (max-width: 760px){
+    #botones{
+        justify-content: flex-end;
+        padding-right: 15px;
+    }
+    #botones button{
+        height: 40px;
+        width: 40px;
+    }    
+    .info{
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        left: 0px;
+        right: 0px;
+    }
+    #logo{
+        width: 35px;
+    }
+    .signal{
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 100%;
+    }
+    .video.mini{
+        background: transparent;
+        opacity: 1;
+    }
 }

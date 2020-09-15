@@ -1,5 +1,5 @@
 
-var videoLocal = document.querySelector("#videoLocal");
+// var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
 var signalingArea = document.querySelector("#signalingArea");
 var btnMicro = document.querySelector('#btnMicro');
@@ -10,8 +10,8 @@ btnMicro.addEventListener('click', toggleMicrophoneAction);
 btnHungup.addEventListener('click', hungupAction);
 btnVideo.addEventListener('click', toggleVideoAction);
 
-var localStream;
 /*
+var localStream;
 var config = {
     iceServers: [
         {
@@ -32,7 +32,7 @@ var config = {
     ]
 };
 */
-
+/*
 var configMediaStream = {
     audio: true, 
     video: {
@@ -42,6 +42,7 @@ var configMediaStream = {
         frameRate: 15
     }
 };
+*/
 
 var pc;
 var dataChannel;
@@ -148,8 +149,7 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
         INFO.error_signaling(err.message);
     }
 });
-console.log("DESDE SESION:JS");
-console.log(config);
+
 function startSignaling() {
     displaySignalMessage("starting signaling...");
 
@@ -238,6 +238,8 @@ function startSignaling() {
 
 /* METODS AUXILIARES */
 // Metodo para arrancar la camara
+
+/*
 async function start(){
     const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
     .then(function(stream){
@@ -251,6 +253,8 @@ async function start(){
         console.error(err.message);
     });
 }
+*/
+
 // Envia un mensaje por dataChannel
 function send(text){
     if( dataChannel ){
@@ -323,3 +327,25 @@ function displaySignalMessage(message) {
 }
 
 
+
+// CONECTION
+var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+var type = connection.effectiveType;
+
+function updateConnectionStatus() {
+  console.log("Connection type changed from " + type + " to " + connection.effectiveType);
+  type = connection.effectiveType;
+}
+
+connection.addEventListener('change', updateConnectionStatus);
+
+
+// STATUS
+function updateOnlineStatus(event) {
+    var condition = navigator.onLine ? "online" : "offline";
+
+    console.log("Conexion status: " + condition);
+}
+
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);

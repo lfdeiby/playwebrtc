@@ -18,6 +18,11 @@
 				<img src="/static/img/favicon.png" alt="DocDoc">
 			</a>
 		</div>
+		<div class="actions">
+			<button id="btnConfig" class="btnConfig" title="Configuracion">
+				<span class="icon-pencil-square"></span>
+			</button>
+		</div>
 
 		<div class="video local mini">
 			<video id="videoLocal" autoplay playsinline></video>
@@ -77,8 +82,44 @@
 		<div id="signalingArea" style="display:none;"></div>
 	</div>
     
+
+	<div id="popupConfig" class="popup">
+		<div class="content">
+			<header>
+				<div class="col col2">
+					<div>
+						<img src="/static/img/favicon.png" alt="DocDoc">
+					</div>
+					<div class="text-right">
+						<button class="close closePopup" title="close" data-popup="popupConfig">
+							<span class="icon-cross"></span>
+						</button>
+					</div>
+				</div>
+			</header>
+			<section class="main">
+				<div>
+					<h2>A tener en cuenta</h2>
+					<label for="">Video / Cámara</label>
+					<select name="videoInput" id="videoInput"></select>
+					<br>
+					<br>
+					<label for="">Audio / Micrófono</label>
+					<select name="audioInput" id="audioInput"></select>
+					<br>
+					<br>
+				</div>
+				<div class="text-right">
+					<button id="btnFinalize" class="btn success"> Continuar </button>
+					<button class="btn closePopup" data-popup="popupConfig"> Cancelar </button>
+				</div>
+			</section>
+		</div>
+	</div>
+
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/static/js/adapter.js"></script>
+
 	<script>
 		var config =  {
     		iceServers: [
@@ -125,9 +166,11 @@
 			init();
 
 		});
-
-		
-
 	</script>
+	
+	<script type="text/javascript" src="/static/js/jquery.js"></script>
+	<script src="/static/js/config.js?ver=2.10.20"></script>
 	<script src="/static/js/sesion.js?ver=2.10.20"></script>
+	<script src="/static/js/sesion_api.js?ver=2.10.20"></script>
+
 </body></html>
