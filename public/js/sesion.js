@@ -183,10 +183,6 @@ function startSignaling() {
         }
     };
 
-    pc.oniceconnectionstatechange = function(event){
-        console.log("ICE CHANGE ", pc.iceConnectionState, event);
-    }
-    
     pc.onnegotiationneeded = function(){
         if( polite == false ){
             makingOffer = true;
@@ -205,6 +201,7 @@ function startSignaling() {
     }
 
     pc.oniceconnectionstatechange = function(evt){
+        console.log("ICE CHANGE ", pc.iceConnectionState, event);
         displaySignalMessage("ICE connection state change: " + evt.target.iceConnectionState);
         if (pc != null && pc.iceConnectionState === "failed") {
             pc.restartIce();

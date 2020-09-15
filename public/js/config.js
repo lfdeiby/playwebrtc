@@ -8,7 +8,7 @@ var audioInputElem = document.querySelector('#audioInput');
 videoInputElem.addEventListener('change', changeDevice);
 audioInputElem.addEventListener('change', changeDevice);
 
-var localStream;
+var localStream = null;
 var videoLocal = document.querySelector("#videoLocal");
 
 function toggleConfig(){
@@ -73,7 +73,20 @@ async function start(){
     });
 }
 
+function resendTrack(){
+	if( pc != undefined && pc != null ){
+		for (const track of localStream.getTracks()) {
+	      pc.addTrack(track, localStream);
+	    }
+	}
+}
+
 function changeDevice(){
+	if( localStream != null ){
+		localStream.getTracks().forEach(t=>{
+			t.stop();
+		});
+	}
 	start();
 }
 
