@@ -77,13 +77,13 @@ io.on('polite', function(data) {
     polite = true;
     document.querySelector('.enableroom').style.display = 'none';
     document.querySelector('.waitfor').style.display = 'block';
-    start();
+    mediaStream();
     displaySignalMessage("Registrado como Polite <br>");
 });
 
 io.on('impolite', function(data) {
     polite = false;
-    start();
+    mediaStream();
     displaySignalMessage("Registrado como Impolite <br>");
 });
 
