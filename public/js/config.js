@@ -1,3 +1,5 @@
+var pc;
+
 var btnConfig = document.querySelector("#btnConfig");
 btnConfig.addEventListener('click', toggleConfig);
 var popupConfig = document.getElementById("popupConfig");

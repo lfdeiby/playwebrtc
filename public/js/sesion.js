@@ -44,7 +44,7 @@ var configMediaStream = {
 };
 */
 
-var pc;
+// var pc;
 var dataChannel;
 var polite = false;
 var sdpConstraints = {
