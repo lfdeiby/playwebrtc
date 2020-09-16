@@ -1,4 +1,6 @@
 var pc;
+var localStream = null;
+var deviceChange = null; // audio|video
 
 var btnConfig = document.querySelector("#btnConfig");
 btnConfig.addEventListener('click', toggleConfig);
@@ -10,8 +12,9 @@ var audioInputElem = document.querySelector('#audioInput');
 videoInputElem.addEventListener('change', changeDevice);
 audioInputElem.addEventListener('change', changeDevice);
 
-var localStream = null;
 var videoLocal = document.querySelector("#videoLocal");
+
+
 
 function toggleConfig(){
 	popupConfig.classList.toggle('active');
@@ -36,7 +39,7 @@ function initSources(){
   				$(audioInputElem).append(html);
   			}
 	  	});
-	    mediaStream(null);
+	    //mediaStream(null);
 	})
 	.catch(function(err) {
   		console.log(err.name + ": " + err.message);
@@ -58,7 +61,7 @@ async function mediaStream(type){
 
 	const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
 	    .then(defineStream)
-	    .then(refreshSender(type))
+	    .then(refreshSender)
 	    .catch(errorNotAccessCamera);
 }
 
@@ -70,14 +73,15 @@ function defineStream(stream){
     document.querySelector('.local').classList.add('active');
 }
 
-function refreshSender(type){
+function refreshSender(){
 	if( pc != undefined && pc != null ){
-		if( type == 'video' ){
+		if( deviceChange == 'video' ){
 			refreshSenderVideo();
-		}else if( type == 'audio' ){
+		}else if( deviceChange == 'audio' ){
 			refreshSenderAudio();
 		}
 	}
+	deviceChange = null;
 }
 
 function refreshSenderVideo(){
@@ -110,17 +114,18 @@ function errorNotAccessCamera(err){
 }
 
 function changeDevice(){
-	var type = null;
 	if( this.getAttribute('id') == 'videoInput' )
-		type = 'video';
+		deviceChange = 'video';
 	else if( this.getAttribute('id') == 'audioInput' )
-		type = 'audio';
+		deviceChange = 'audio';
 
-	if( type && localStream ){
-		localStream.getTracks().forEach(t=>{
-			if( t.kind == type )
-				t.stop();
-		});
+	if( deviceChange ){
+		if( localStream ){
+			localStream.getTracks().forEach(t=>{
+				//if( t.kind == type )
+					t.stop();
+			});
+		}
 		mediaStream(type);
 	}
 }
