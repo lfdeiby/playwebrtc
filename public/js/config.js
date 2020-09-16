@@ -69,7 +69,7 @@ function defineStream(stream){
 }
 
 function refreshSender(type){
-	if( pc ){
+	if( pc != undefined && pc != null ){
 		if( type == 'video' ){
 			refreshSenderVideo();
 		}else if( type == 'audio' ){
