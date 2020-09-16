@@ -46,7 +46,7 @@ function initSources(){
 	});
 }
 
-async function mediaStream(type){
+async function mediaStream(){
 	var configMediaStream = {
 	    audio: { 
 	    	deviceId: audioInputElem.value 
@@ -68,7 +68,7 @@ async function mediaStream(type){
 function defineStream(stream){
 	localStream = stream;
     videoLocal.autoplay = true;
-    videoLocal.muted = false;
+    videoLocal.muted = true;
     videoLocal.srcObject = stream;
     document.querySelector('.local').classList.add('active');
 }
@@ -122,11 +122,11 @@ function changeDevice(){
 	if( deviceChange ){
 		if( localStream ){
 			localStream.getTracks().forEach(t=>{
-				//if( t.kind == type )
+				if( t.kind == deviceChange )
 					t.stop();
 			});
 		}
-		mediaStream(type);
+		mediaStream();
 	}
 }
 
