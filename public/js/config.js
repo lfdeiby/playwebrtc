@@ -48,7 +48,7 @@ function initSources(){
 }
 
 async function mediaStream(){
-	alert(audioInputElem.value  + " - " videoInputElem.value);
+	alert(audioInputElem.value  + " - " + videoInputElem.value);
 	var configMediaStream = {
 	    audio: { 
 	    	deviceId: audioInputElem.value 
