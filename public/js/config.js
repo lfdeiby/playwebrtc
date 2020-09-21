@@ -56,7 +56,7 @@ async function mediaStream(){
 	    video: {
 	    	//deviceId: {exact: videoInputElem.value},
 	    	//facingMode: 'user',
-	        width: 320,
+	        width: 680,
 	        frameRate: 15
 		}
 	};
