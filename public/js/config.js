@@ -32,11 +32,11 @@ function initSources(){
   		devices.forEach(function(device) {
   			alert(device.kind + ": " + device.deviceId + " - " + device.label);
   			if( device.kind == 'videoinput' ){
-  				var html = `<option value="${ device.deviceId }">${ device.label }</option>`;
+  				var html = `<option value="${ device.deviceId }">${ device.label } 1</option>`;
   				$(videoInputElem).append(html);
   			}
   			if( device.kind == 'audioinput' ){
-  				var html = `<option value="${ device.deviceId }">${ device.label }</option>`;
+  				var html = `<option value="${ device.deviceId }">${ device.label } 2</option>`;
   				$(audioInputElem).append(html);
   			}
 	  	});
@@ -51,11 +51,11 @@ async function mediaStream(){
 	alert(audioInputElem.value  + " - " + videoInputElem.value);
 	var configMediaStream = {
 	    audio: { 
-	    	deviceId: audioInputElem.value 
+	    	deviceId: {exact: audioInputElem.value}
 	    }, 
 	    video: {
-	    	deviceId: videoInputElem.value,
-	    	facingMode: 'user',
+	    	deviceId: {exact: videoInputElem.value},
+	    	//facingMode: 'user',
 	        width: 320,
 	        frameRate: 15
 		}
