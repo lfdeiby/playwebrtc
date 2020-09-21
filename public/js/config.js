@@ -50,13 +50,13 @@ function initSources(){
 async function mediaStream(){
 	alert(audioInputElem.value  + " - " + videoInputElem.value);
 	var configMediaStream = {
-	    audio: { 
-	    	deviceId: {exact: audioInputElem.value}
-	    }, 
+	    audio: true/*{ 
+	    	//deviceId: {exact: audioInputElem.value}
+	    }*/, 
 	    video: {
-	    	deviceId: {exact: videoInputElem.value},
-	    	//facingMode: 'user',
-	        width: 320,
+	    	//deviceId: {exact: videoInputElem.value},
+	    	facingMode: 'user',
+	        width: 360,
 	        frameRate: 15
 		}
 	};
