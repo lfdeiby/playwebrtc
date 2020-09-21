@@ -30,7 +30,7 @@ function initSources(){
 	navigator.mediaDevices.enumerateDevices()
 	.then(function(devices) {
   		devices.forEach(function(device) {
-  			alert(device.deviceId + " - " + device.label);
+  			alert(device.kind + ": " + device.deviceId + " - " + device.label);
   			if( device.kind == 'videoinput' ){
   				var html = `<option value="${ device.deviceId }">${ device.label }</option>`;
   				$(videoInputElem).append(html);
@@ -43,7 +43,7 @@ function initSources(){
 	    //mediaStream(null);
 	})
 	.catch(function(err) {
-  		console.log(err.name + ": " + err.message);
+  		alert(err.name + ": " + err.message);
 	});
 }
 
