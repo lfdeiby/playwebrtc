@@ -160,7 +160,12 @@ function startSignaling() {
     }
 
     if( polite == false ){
-        dataChannel = pc.createDataChannel('chat', null);
+        var optionDataChannel = {
+            reliable: false,
+            maxRetransmitTime: 30
+        };
+
+        dataChannel = pc.createDataChannel('chat', optionDataChannel);
         dataChannel.onopen = function(){
             if( dataChannel.readyState == 'open' ){
                 displaySignalMessage("Data Channel is ready");

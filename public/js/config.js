@@ -30,6 +30,7 @@ function initSources(){
 	navigator.mediaDevices.enumerateDevices()
 	.then(function(devices) {
   		devices.forEach(function(device) {
+  			alert(device.deviceId + " - " + device.label);
   			if( device.kind == 'videoinput' ){
   				var html = `<option value="${ device.deviceId }">${ device.label }</option>`;
   				$(videoInputElem).append(html);
