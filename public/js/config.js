@@ -111,7 +111,7 @@ function refreshSenderAudio(){
 }
 
 function errorNotAccessCamera(err){
-	alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+	alert(err.message + "\nNo hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
     console.error(err.message);
 }
 
