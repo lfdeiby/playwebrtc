@@ -53,12 +53,12 @@ async function mediaStream(){
 	    audio: true/*{ 
 	    	//deviceId: {exact: audioInputElem.value}
 	    }*/, 
-	    video: {
+	    video: true/*{
 	    	//deviceId: {exact: videoInputElem.value},
 	    	//facingMode: 'user',
-	        width: 680,
+	        width: 640,
 	        frameRate: 15
-		}
+		}*/
 	};
 
 	const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
