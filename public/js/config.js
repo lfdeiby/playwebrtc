@@ -30,7 +30,7 @@ function initSources(){
 	navigator.mediaDevices.enumerateDevices()
 	.then(function(devices) {
   		devices.forEach(function(device) {
-  			alert(device.kind + ": " + device.deviceId + " - " + device.label);
+  			//alert(device.kind + ": " + device.deviceId + " - " + device.label);
   			if( device.kind == 'videoinput' ){
   				var html = `<option value="${ device.deviceId }">${ device.label } 1</option>`;
   				$(videoInputElem).append(html);
@@ -54,11 +54,11 @@ async function mediaStream(){
 	    	//deviceId: {exact: audioInputElem.value}
 	    }*/, 
 	    video: {
-	    	deviceId: {exact: videoInputElem.value},
-	    	facingMode: 'user',
-	        width: 320,
-	        height: 240,
-	        frameRate: 15
+	    	//deviceId: {exact: videoInputElem.value},
+	    	//facingMode: 'user',
+	        width: 640,
+        	height: 480,
+	        //frameRate: 15
 		}
 	};
 
