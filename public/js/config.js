@@ -59,12 +59,12 @@ async function mediaStream(){
 	    	width: {
 	            min: 320,
 	            max: 640,
-	            ideal: 320
+	            ideal: 640
 	        },
         	height: {
         		min: 240,
         		max: 480,
-        		ideal: 240
+        		ideal: 480
         	}
 	        //frameRate: 15
 		}
