@@ -48,15 +48,15 @@ function initSources(){
 }
 
 async function mediaStream(){
-	alert(audioInputElem.value  + " - " + videoInputElem.value);
+	alert(audioInputElem.value  + " -- " + videoInputElem.value);
 	var configMediaStream = {
 	    audio: true/*{ 
 	    	//deviceId: {exact: audioInputElem.value}
 	    }*/, 
 	    video: {
 	    	//deviceId: {exact: videoInputElem.value},
-	    	facingMode: 'user',
-	        width: 360,
+	    	//facingMode: 'user',
+	        width: 320,
 	        frameRate: 15
 		}
 	};
@@ -111,7 +111,8 @@ function refreshSenderAudio(){
 }
 
 function errorNotAccessCamera(err){
-	alert(err.message + "\nNo hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+	alert(err.message );// "\nNo hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+	alert(err.toString());
     console.error(err.message);
 }
 
