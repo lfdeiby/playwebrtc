@@ -14,7 +14,7 @@ audioInputElem.addEventListener('change', changeDevice);
 
 var videoLocal = document.querySelector("#videoLocal");
 
-
+var widthVideo = 360;
 
 function toggleConfig(){
 	popupConfig.classList.toggle('active');
@@ -29,14 +29,19 @@ function initSources(){
 
 	navigator.mediaDevices.enumerateDevices()
 	.then(function(devices) {
+		var icam = 1;
+		var iaud = 1;
   		devices.forEach(function(device) {
-  			//alert(device.kind + ": " + device.deviceId + " - " + device.label);
   			if( device.kind == 'videoinput' ){
-  				var html = `<option value="${ device.deviceId }">${ device.label } 1</option>`;
+  				var label = device.label == "" ? "Cámara " + icam : device.label;
+  				icam += 1;
+  				var html = `<option value="${ device.deviceId }">${ label }</option>`;
   				$(videoInputElem).append(html);
   			}
   			if( device.kind == 'audioinput' ){
-  				var html = `<option value="${ device.deviceId }">${ device.label } 2</option>`;
+  				var label = device.label == "" ? "Audio " + iaud : device.label;
+  				iaud += 1;
+  				var html = `<option value="${ device.deviceId }">${ label }</option>`;
   				$(audioInputElem).append(html);
   			}
 	  	});
@@ -50,13 +55,15 @@ function initSources(){
 async function mediaStream(){
 	alert(audioInputElem.value  + " -- " + videoInputElem.value);
 	var configMediaStream = {
-	    audio: true/*{ 
-	    	//deviceId: {exact: audioInputElem.value}
-	    }*/, 
+	    audio: { 
+	    	deviceId: {exact: audioInputElem.value}
+	    }, 
 	    video: {
-	    	//deviceId: {exact: videoInputElem.value},
-	    	//facingMode: 'user',
-	    	width: {
+	    	deviceId: {exact: videoInputElem.value},
+	    	facingMode: 'user',
+	    	width: widthVideo,
+	    	/*
+	    	{
 	            min: 320,
 	            max: 640,
 	            ideal: 640
@@ -66,7 +73,8 @@ async function mediaStream(){
         		max: 480,
         		ideal: 480
         	}
-	        //frameRate: 15
+        	*/
+	        frameRate: 15
 		}
 	};
 
@@ -120,9 +128,14 @@ function refreshSenderAudio(){
 }
 
 function errorNotAccessCamera(err){
-	alert(err.message );// "\nNo hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-	alert(err.toString());
-    console.error(err.message);
+    if( err.message == ""){
+    	//mediaStream();
+    	alert(err.message );
+    }else{
+    	alert(err.message );// "\nNo hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+		alert(err.toString());
+	    console.error(err.message);	
+    }
 }
 
 function changeDevice(){
