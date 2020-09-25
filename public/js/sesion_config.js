@@ -35,25 +35,23 @@ function initSources(){
   			if( device.kind == 'videoinput' ){
   				var label = device.label == "" ? "Cámara " + icam : device.label;
   				icam += 1;
-  				var html = `<option value="${ device.deviceId }">${ label }</option>`;
+  				var html = '<option value="' + device.deviceId + '">' + label + '</option>';
   				$(videoInputElem).append(html);
   			}
   			if( device.kind == 'audioinput' ){
   				var label = device.label == "" ? "Audio " + iaud : device.label;
   				iaud += 1;
-  				var html = `<option value="${ device.deviceId }">${ label }</option>`;
+  				var html = '<option value="' + device.deviceId + '">' + label + '</option>';
   				$(audioInputElem).append(html);
   			}
 	  	});
-	    //mediaStream(null);
 	})
 	.catch(function(err) {
   		alert(err.name + ": " + err.message);
 	});
 }
 
-async function mediaStream(){
-	alert(audioInputElem.value  + " -- " + videoInputElem.value);
+function mediaStream(){
 	var configMediaStream = {
 	    audio: { 
 	    	deviceId: {exact: audioInputElem.value}
@@ -78,7 +76,7 @@ async function mediaStream(){
 		}
 	};
 
-	const stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
+	navigator.mediaDevices.getUserMedia(configMediaStream)
 	    .then(defineStream)
 	    .then(refreshSender)
 	    .catch(errorNotAccessCamera);
@@ -146,7 +144,7 @@ function changeDevice(){
 
 	if( deviceChange ){
 		if( localStream ){
-			localStream.getTracks().forEach(t=>{
+			localStream.getTracks().forEach(function(t){
 				if( t.kind == deviceChange )
 					t.stop();
 			});
@@ -154,6 +152,7 @@ function changeDevice(){
 		mediaStream();
 	}
 }
+
 
 
 
