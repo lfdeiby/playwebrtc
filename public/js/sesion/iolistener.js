@@ -38,7 +38,6 @@ async function call(){
         });
 
         const offer = await pc.createOffer(sdpConstraints);
-        offer.sdp = setBandwidth(offer.sdp);
 
         await pc.setLocalDescription(offer);
 

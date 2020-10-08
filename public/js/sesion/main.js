@@ -11,6 +11,17 @@ var localStream;
 var screenShare;
 var pc;
 var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true };
+
+var configMediaStream = {
+    audio: true, 
+    video: {
+        width: 360, //width: 640,//height: 480,
+        frameRate: 15,
+        facingMode: 'user',
+        //maxBitrate: 125
+    }
+};
+/*
 if( me.type == 'coach'){
 var configMediaStream = {
     audio: true, 
@@ -31,7 +42,7 @@ var configMediaStream = {
     }
 };
 }
-
+*/
 var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
 var signalingArea = document.querySelector("#signalingArea");
