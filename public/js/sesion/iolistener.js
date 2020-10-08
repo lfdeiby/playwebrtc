@@ -11,10 +11,8 @@ function ioListener(io){
     // Peer close
     io.on('exit', function(data) {
         console.log("Se desconecto: ", data);
-    });
-    // Peer disconnected IO
-    io.on('fall', function(data) {
-        console.log("Se desconecto: ", data);
+        MODAL.leaveroom(data);
+        closePeerConnection();
     });
     // Enable room to call
     io.on('open_room', function(data) {
@@ -25,7 +23,9 @@ function ioListener(io){
     });
     // Start call conecction
     io.on('call_start', function(data){
-        call();
+        if( pc ){
+            call();
+        }
     });
 }
 
@@ -38,6 +38,7 @@ async function call(){
         });
 
         const offer = await pc.createOffer(sdpConstraints);
+        offer.sdp = setBandwidth(offer.sdp);
 
         await pc.setLocalDescription(offer);
 
@@ -47,17 +48,6 @@ async function call(){
             signal_room: SIGNAL_ROOM
         });
     }
-}
-
-function setBandwidth(sdp) {
-    //sdp = sdp.replace(/a=mid:audio\r\n/g, 'a=mid:audio\r\nb=AS:' + audioBandwidth + '\r\n');
-    console.log(sdp);
-    // sdp = sdp.replace(/a=mid:video\r\n/g, 'a=mid:video\r\nb=AS:' + 250 + '\r\n');
-    sdp += "a=fmtp:100 x-google-max-bitrate=500\r\n";
-    console.log("-------------------------------------------")
-    console.log(sdp);
-
-    return sdp;
 }
 
 function defineBandwidth(){

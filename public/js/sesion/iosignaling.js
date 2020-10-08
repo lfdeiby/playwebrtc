@@ -18,6 +18,7 @@ function ioSignaling(io){
                 });
 
                 var answer = await pc.createAnswer();
+                answer.sdp = setBandwidth(answer.sdp);
 
                 await pc.setLocalDescription(answer);
                 io.emit('message', {

@@ -129,9 +129,9 @@ function signalingSuccess(){
     btnMicro.disabled = false;
     btnVideo.disabled = false;
     btnHungup.disabled = false;
-    //btnReconect.disabled = false;
+    // btnReconect.disabled = false;
     if( btnShare ){
         btnShare.disabled = false;
     }
-    // INFO.signaling_finalize();
+    INFO.signaling_finalize();
 }

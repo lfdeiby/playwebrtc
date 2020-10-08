@@ -11,17 +11,6 @@ var localStream;
 var screenShare;
 var pc;
 var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true };
-
-var configMediaStream = {
-    audio: true, 
-    video: {
-        width: 640, //width: 640,//height: 480,
-        frameRate: 15,
-        facingMode: 'user',
-        //maxBitrate: 125
-    }
-};
-/*
 if( me.type == 'coach'){
 var configMediaStream = {
     audio: true, 
@@ -42,7 +31,7 @@ var configMediaStream = {
     }
 };
 }
-*/
+
 var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
 var signalingArea = document.querySelector("#signalingArea");
@@ -53,6 +42,7 @@ function enableRoom(){
     .then(function(stream){
         localStream = stream;
         io.emit('open', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
+        //INFO.habilitar_sala();
         document.querySelector('.enableroom').style.display = 'none';
         document.querySelector('.waitfor').style.display = 'block';
     })
@@ -99,26 +89,57 @@ function displaySignalMessage(message) {
 
 window.addEventListener('beforeunload', function(){
     if( pc != undefined){
+        //INFO.exit_page();
         io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     }
 });
 
+function updateOnlineStatus(event) {
+    var condition = navigator.onLine ? "online" : "offline";
+
+    if( navigator.onLine ){
+        MODAL.closeOffline();
+        tryReconnect();
+    }else{
+        MODAL.offline();
+        closePeerConnection();
+    }
+}
+
+function tryReconnect(){
+    MODAL.reconnect();
+    setTimeout(function(){
+        if( io.connected ){
+            if( me.type == 'coach' ){
+                call();
+            }else{
+                if( io.connected ){
+                    io.emit('call', {"signal_room": SIGNAL_ROOM});
+                }
+            }
+        }else{
+            alert("Socket caido");
+        }
+    }, 1500);
+}
+
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
 
 
 // INIT
-function init(){
-    io.emit('ready', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
+io.emit('ready', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
 
-    if( me.type == 'coach'){
-        var btnEnableRoom = document.querySelector('#enableRoom');
-        btnEnableRoom.addEventListener('click', enableRoom);
-        btnShare = document.getElementById('btnShare');
-        btnShare.addEventListener('click', handlerShareScreen);
-    }else{
-        var btnStartCall = document.getElementById('startCall');
-        btnStartCall.addEventListener('click', handlerStartCall);
-    }
-
-    ioListener(io);
-    ioSignaling(io);
+if( me.type == 'coach'){
+    var btnEnableRoom = document.querySelector('#enableRoom');
+    btnEnableRoom.addEventListener('click', enableRoom);
+    btnShare = document.getElementById('btnShare');
+    btnShare.addEventListener('click', handlerShareScreen);
+}else{
+    var btnStartCall = document.getElementById('startCall');
+    btnStartCall.addEventListener('click', handlerStartCall);
 }
+
+ioListener(io);
+ioSignaling(io);
