@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?ox7za9');
-  src:  url('fonts/icomoon.eot?ox7za9#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?ox7za9') format('truetype'),
-    url('fonts/icomoon.woff?ox7za9') format('woff'),
-    url('fonts/icomoon.svg?ox7za9#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?6gpryf');
+  src:  url('fonts/icomoon.eot?6gpryf#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?6gpryf') format('truetype'),
+    url('fonts/icomoon.woff?6gpryf') format('woff'),
+    url('fonts/icomoon.svg?6gpryf#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -13,7 +13,7 @@
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
-  speak: none;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -35,6 +35,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-notebook-list:before {
+  content: "\e952";
+}
+.icon-clipboard-list:before {
+  content: "\e954";
+}
+.icon-video:before {
+  content: "\e910";
+}
 .icon-send:before {
   content: "\e918";
 }
@@ -50,8 +59,32 @@
 .icon-talk:before {
   content: "\e911";
 }
-.icon-video:before {
-  content: "\e910";
+.icon-chain:before {
+  content: "\e95c";
+}
+.icon-link:before {
+  content: "\e95c";
+}
+.icon-lock:before {
+  content: "\e95d";
+}
+.icon-refresh:before {
+  content: "\e95a";
+}
+.icon-check:before {
+  content: "\e959";
+}
+.icon-history:before {
+  content: "\e957";
+}
+.icon-minus-circle:before {
+  content: "\e956";
+}
+.icon-minus:before {
+  content: "\e955";
+}
+.icon-file-image-o:before {
+  content: "\e951";
 }
 .icon-video-camera:before {
   content: "\e950";
@@ -191,6 +224,15 @@
 .icon-tiktok:before {
   content: "\e900";
 }
+.icon-screen_share:before {
+  content: "\e95f";
+}
+.icon-mark_email_read:before {
+  content: "\e95e";
+}
+.icon-language:before {
+  content: "\e95b";
+}
 .icon-receipt:before {
   content: "\e941";
 }
@@ -323,6 +365,9 @@
 .icon-compass:before {
   content: "\e949";
 }
+.icon-map:before {
+  content: "\e958";
+}
 .icon-clock:before {
   content: "\e94e";
 }
@@ -347,10 +392,16 @@
 .icon-bin:before {
   content: "\e9ac";
 }
+.icon-clipboard:before {
+  content: "\e9b8";
+}
 .icon-sphere:before {
   content: "\e9c9";
 }
-.icon-link:before {
+.icon-earth:before {
+  content: "\e9ca";
+}
+.icon-link1:before {
   content: "\e9cb";
 }
 .icon-attachment:before {
@@ -359,8 +410,14 @@
 .icon-cross:before {
   content: "\ea0f";
 }
+.icon-checkmark:before {
+  content: "\ea10";
+}
 .icon-enter:before {
   content: "\ea13";
+}
+.icon-loop2:before {
+  content: "\ea2e";
 }
 .icon-facebook:before {
   content: "\ea90";

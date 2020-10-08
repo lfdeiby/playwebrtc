@@ -13,16 +13,6 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-/*
-var https = require('https');
-var fs = require('fs');
-var server = https.createServer({
-        key: fs.readFileSync('server.key'),
-        cert: fs.readFileSync('server.cert')
-    }, app
-);
-var io = require('socket.io')(server);
-*/
 app.set('trust proxy', 1);
 
 app.use(compression()); // Para comprimir ne gzip
@@ -48,15 +38,13 @@ nunjucks.configure('views', {
 })
 
 app.get('/', function(req, res){
-    /*
+    /**/
     const accountSid = 'AC08c974e15c6d582b34e82aeb43c4827e';
     const authToken = '0e19040d4e7d556afbc7cf492c1495e7';
     const client = require('twilio')(accountSid, authToken);
     
     //{ttl: 3600} crea un token por 1 hora
     client.tokens.create({ttl: 3600}).then(token =>{
-        console.log("------------------------");
-        console.log(token);
         const params = {
             name: "Deiby",
             token: token.iceServers
@@ -64,76 +52,12 @@ app.get('/', function(req, res){
  
         res.render('index.html', params);
     });
-    */
-    res.render('index.html', {name:'', token:[]});
+    /**/
+    //res.render('index.html', {name:'', token:[]});
 });
 
-
-io.sockets.on('connection', function(socket){
-
-    socket.on('ready', function(data){
-        const MESSAGE_DUPLICATE = "El usuario ya tiene una sesión abierta";
-
-        var clientsInRoom = io.sockets.adapter.rooms[data.signal_room];
-        var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
-
-        let duplicate = false;
-        if( clientsInRoom !== undefined ){
-            //console.log(clientsInRoom.sockets);
-            let sss = clientsInRoom.sockets;
-            Object.keys(sss).forEach(function (item) {
-                const client = io.sockets.connected[item];
-                if( client.user_id == data.user_id ){
-                    duplicate = true;
-                }
-            });
-        }
-        
-        //if( duplicate ){
-        //    socket.emit('problemas', { message: MESSAGE_DUPLICATE } );
-        //}else{
-            if( data.type == 'coach' /*numClients == 0*/ && duplicate == false ){
-                socket.user_id = data.user_id;
-                socket.user_type = data.type;
-                socket.join(data.signal_room);
-                socket.emit('polite', {
-                    message: socket.user_id + ' Unido POLITE ' + data.signal_room + " room"
-                });
-    
-            }else if( data.type == 'client' /*numClients !== 0*/ && duplicate == false ){
-                // io.sockets.in(data.signal_room).emit('join', data.signal_room);
-                socket.user_id = data.user_id;
-                socket.user_type = data.type;
-                socket.join(data.signal_room);
-                socket.emit('impolite', {
-                    message: socket.user_id + ' UNIDO IMPOLITE ' + data.signal_room + " room"
-                });
-            }
-            socket.to(data.signal_room).emit('join', {
-                id: data.user_id,
-                name: data.name,
-                type: data.type
-            });
-        //}
-    });
-
-    socket.on('client_reconect', function(data){
-        socket.to(data.signal_room).emit('join', {
-            id: data.user_id,
-            name: data.name,
-            type: data.type
-        });
-    });
-
-    socket.on('call', function(data){
-        socket.to(data.signal_room).emit('call_start', data.signal_room);
-        socket.emit('call_start', data.signal_room);
-    });
-
-    socket.on('signal', function(data){
-        socket.to(data.room).emit('signaling_message', { data });
-    });
-});
+var ioconection = require('./ioserver');
+ioconection(io);
 
 server.listen(PORT, function(){
 	console.log('Server running in: localhost:' + PORT);
