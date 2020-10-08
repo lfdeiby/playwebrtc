@@ -15,7 +15,7 @@ var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true };
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 360, //width: 640,//height: 480,
+        width: 640, //width: 640,//height: 480,
         frameRate: 15,
         facingMode: 'user',
         //maxBitrate: 125
