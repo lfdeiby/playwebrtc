@@ -45,8 +45,8 @@ function ioserver(io){
         });
 
         socket.on('bye', function(data){
-            const result = { id: data.user_id };
-            socket.to(data.signal_room).emit('exit', data);
+            const result = { id: data.user_id, user_name: socket.user_name };
+            socket.to(data.signal_room).emit('exit', result);
 
             socket.leave(data.signal_room);
         });
@@ -62,8 +62,8 @@ function ioserver(io){
 
         socket.on('disconnect', function(){
             if( socket.user_room ){
-                const data = { id: socket.user_id };
-                socket.to(socket.user_room).emit('fall', data);
+                const result = { id: socket.user_id, user_name: socket.user_name };
+                socket.to(socket.user_room).emit('bye', result);
             }
         });
 
