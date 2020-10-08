@@ -15,7 +15,7 @@ if( me.type == 'coach'){
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 360, //width: 640,//height: 480,
+        width: 640, //width: 640,//height: 480,
         frameRate: 15,
         facingMode: 'user',
         //maxBitrate: 125
@@ -59,13 +59,13 @@ function handlerStartCall(){
         io.emit('call', {"signal_room": SIGNAL_ROOM});
     })
     .catch(function(err) {
-         alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-         console.log(err);
+         alert(err.message + "No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+         alert(err);
     });
 }
 
 
-async function getUserMedia(callback){
+async function getUserMedia(){
     var stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
     
     videoLocal.autoplay = true;
