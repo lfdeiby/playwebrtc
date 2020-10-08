@@ -133,5 +133,5 @@ function signalingSuccess(){
     if( btnShare ){
         btnShare.disabled = false;
     }
-    INFO.signaling_finalize();
+    //INFO.signaling_finalize();
 }

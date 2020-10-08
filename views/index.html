@@ -8,10 +8,10 @@
 	<link rel="icon" type="image/png" href="/static/img/favicon.png">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/fonts/icomoon/style.css">
-	<link rel="stylesheet" href="/static/css/sesion.css?v=1">
-	<link rel="stylesheet" href="/static/css/receta.css">
+	<link rel="stylesheet" href="/static/css/sesion.css">
 </head>
 <body>
+
 	<div class="main">
 		<div id="logo">
 			<a href="/">
@@ -19,22 +19,10 @@
 			</a>
 		</div>
 		<div class="actions">
-			{% if (me.type == 'coach') and (emite_receta == true) and (recetario != null) %}
-			<button class="btnReceta" title="Receta">
-				<span class="icon-clipboard-list"></span>
-			</button>
-			{% endif %}
-			<button class="btnInfo" title="Información">
-				<span class="icon-user"></span>
-			</button>
-			<button class="btnQuiz" title="Cuestionario">
+			<button id="btnConfig" class="btnConfig" title="Configuracion">
 				<span class="icon-pencil-square"></span>
 			</button>
 		</div>
-
-		{% if (me.type == 'coach') and (emite_receta == true) %}
-			{% include 'sesion/partial_receta.html' %}
-		{% endif %}
 
 		<div class="video local mini">
 			<video id="videoLocal" autoplay playsinline></video>
@@ -43,84 +31,72 @@
 			<video id="videoRemote" autoplay playsinline></video>
 		</div>
 
-		{% if me.type == 'coach' %}
-		<div class="signal">
+		<div id="select" class="signal">
+			Sleccione
+			<select name="user" id="user">
+				<option value="">Sleccione</option>
+				<option value="coach">Usuario 1</option>
+				<option value="client">Usuario 2</option>
+			</select>
+		</div>
+
+		
+		<div id="coach" class="signal" style="display:none">
 			<div class="enableroom">
 				<p>Bienvenid@ por favor haz click en el siguiente botón para habilitar la sala.</p>
 				<button id="enableRoom" class="btn success">Habilitar sala</button>
 			</div>
 			<div class="waitfor" style="display:none;">
-				<p> Esperando que se conecte: <b>{{ other.name }}</b></p>
-				<div>
-					<a href="https://wa.me/{{ other.country_code}}{{ other.phone }}?text=DocDoc%20te%20esperamos%20en%20la%20sesion%3A%20https%3A%2F%2Fdocdoc.net%2Fsesion%2F{{ room }}"
-					target="_blank" class="btn success makeRemember">
-						<span class="icon-whatsapp"></span>
-						Hazle recuerdo
-					</a>
-				</div>
+				<p> Esperando a: <b>Usuario 2</b></p>
 			</div>
 		</div>
-		{% else %}
-		<div class="signal">
+		
+		<div id="client" class="signal" style="display:none">
 			<div class="waitfor">
-				<p> Esperando al dr(a) {{ other.name }}</p>
-				<div>
-					<a href="https://wa.me/{{ other.country_code}}{{ other.phone }}?text=DocDoc%20te%20esperamos%20en%20la%20sesion%3A%20https%3A%2F%2Fdocdoc.net%2Fsesion%2F{{ room }}" 
-					target="_blank" class="btn success makeRemember"> 
-						<span class="icon-whatsapp"></span>
-						Hazle recuerdo
-					</a>
-				</div>
+				<p> Esperando a: Usuario 1</p>
 			</div>
 			<div class="startCall" style="display:none;">
-				<p>El dr(a) {{ other.name }} te espera.</p>
+				<p>El Usuario 1 te espera.</p>
 				<button id="startCall" class="btn success">Entrar a la sala</button>
 			</div>
 		</div>
-		{% endif %}
 
 		<div id="botones">
 			<div>
-				<button id="btnMicro" disabled title="Micrófono"> 
+				<button id="btnMicro" disabled> 
 					<span class="icon-microphone" disabled></span> 
 				</button>
 			</div>
 			<div>
-				<button id="btnHungup" disabled class="close"  title="Finalizar">
+				<button id="btnHungup" class="close" disabled>
 					<span class="icon-cross" disabled></span> 
 				</button>
 			</div>
 			<div>
-				<button id="btnVideo" disabled title="Video"> 
+				<button id="btnVideo" disabled> 
 					<span class="icon-video-camera" ></span> 
 				</button>
 			</div>
-			{% if me.type == 'coach' %}
 			<div>
 				<button id="btnShare" disabled title="Compartir pantalla"> 
 					<span class="icon-screen_share"></span>
-				</button>
-			</div>
-			{% endif %}
-			<div>
-				<button id="btnReconect" disabled title="Reconectar"> 
-					<span class="icon-refresh"></span>
 				</button>
 			</div>
 		</div>
 
 		<div id="signalingArea" style="display:none;"></div>
 	</div>
+    
 
-	<div id="popupFinalize" class="popup">
+	<div id="popupConfig" class="popup">
 		<div class="content">
 			<header>
 				<div class="col col2">
 					<div>
-						<img src="/static/img/logo.png" alt="DocDoc">
+						<img src="/static/img/favicon.png" alt="DocDoc">
 					</div>
 					<div class="text-right">
-						<button class="close closePopup" title="close" data-popup="popupFinalize">
+						<button class="close closePopup" title="close" data-popup="popupConfig">
 							<span class="icon-cross"></span>
 						</button>
 					</div>
@@ -129,28 +105,26 @@
 			<section class="main">
 				<div>
 					<h2>A tener en cuenta</h2>
-					<p>
-						Cuando presiona el botón de finalizar. <br>
-						La sesión habrá terminado y no podrá volver a ingresar a esta sesión.
-					</p>
-					<p>
-						En caso de algún percance sólo vuelva a cargar la página o cierra la misma para ingresar en otro momento.
-					</p>
-					<p>
-						Para finalizar la sesión definitivamente presiona el botón "Continuar", caso contrario presione el botón "Cancelar".
-					</p>
+					<label for="">Video / Cámara</label>
+					<select name="videoInput" id="videoInput"></select>
+					<br>
+					<br>
+					<label for="">Audio / Micrófono</label>
+					<select name="audioInput" id="audioInput"></select>
+					<br>
 					<br>
 				</div>
 				<div class="text-right">
 					<button id="btnFinalize" class="btn success"> Continuar </button>
-					<button class="btn closePopup" data-popup="popupFinalize"> Cancelar </button>
+					<button class="btn closePopup" data-popup="popupConfig"> Cancelar </button>
 				</div>
 			</section>
 		</div>
 	</div>
-    
+
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="/static/js/lib/adapter.js"></script>
+	<script src="/static/js/adapter.js"></script>
+
 	<script>
 		var config =  {
     		iceServers: [
@@ -167,31 +141,83 @@
 			]
 		};
 
-		var DOMAIN = "{{ domain }}";
-		var SIGNAL_ROOM = "{{ room }}";
+
+		var SIGNAL_ROOM = "room_webrtc";
 		var me = {
-			id: '{{ me.id }}',
-			name: '{{ me.name }}',
-			type: '{{ me.type }}',
+			id: '10',
+			name: 'Usuario 1',
+			type: 'client',
 			status: 'disable'
 		};
 		var other = {
-			id: '{{ other.id }}',
-			name: '{{ other.name }}',
-			type: '{{ other.type }}',
+			id: '11',
+			name: 'Usuario 2',
+			type: 'coach',
 			status: 'disable'
 		};
+
+
+		var typeUser = document.querySelector('#user');
+		typeUser.addEventListener('change', function(){
+			var value = document.querySelector('#user').value;
+			if( value == 'coach'){
+				me = other;
+				document.querySelector('#coach').style.display = 'block';
+			}else if(value == 'client'){
+				document.querySelector('#client').style.display = 'block';
+			}
+
+			document.querySelector('#select').style.display = 'none';
+			init();
+
+		});
 	</script>
+	
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.4/mobile-detect.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
-	<script src="/static/js/sesion_info.js?v=1"></script>
+
 	<script src="/static/js/sesion/modal.js"></script>
 	<script src="/static/js/sesion/handlerbuttons.js"></script>
 	<script src="/static/js/sesion/iolistener.js"></script>
 	<script src="/static/js/sesion/iosignaling.js"></script>
 	<script src="/static/js/sesion/createpeer.js"></script>
 	<script src="/static/js/sesion/main.js"></script>
-	<script src="/static/js/receta.js?v=1"></script>
-	<script src="/static/js/sesion_api.js?v=1"></script>
+	<script src="/static/js/sesion_api.js?ver=2.10.20"></script>
+	
+	{#
+	<script src="/static/js/sesion_verify.js?ver=2.10.20"></script>
+	<script src="/static/js/sesion_config.js?ver=2.10.20"></script>
+	<script src="/static/js/sesion.js?ver=2.10.20"></script>
+	#}
 
-</body>
-</html>
+	{# 
+		var OSName="Unknown OS";
+		if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+		if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+		if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+		if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+
+		document.write('Your OS: '+OSName);
+
+		function getMobileOperatingSystem() {
+		  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+		      // Windows Phone must come first because its UA also contains "Android"
+		    if (/windows phone/i.test(userAgent)) {
+		        return "Windows Phone";
+		    }
+
+		    if (/android/i.test(userAgent)) {
+		        return "Android";
+		    }
+
+		    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+		    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+		        return "iOS";
+		    }
+
+		    return "unknown";
+		}
+	#}
+
+</body></html>

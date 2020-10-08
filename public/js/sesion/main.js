@@ -129,6 +129,7 @@ window.addEventListener('offline', updateOnlineStatus);
 
 
 // INIT
+function init(){
 io.emit('ready', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
 
 if( me.type == 'coach'){
@@ -143,3 +144,4 @@ if( me.type == 'coach'){
 
 ioListener(io);
 ioSignaling(io);
+}

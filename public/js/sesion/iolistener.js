@@ -23,9 +23,7 @@ function ioListener(io){
     });
     // Start call conecction
     io.on('call_start', function(data){
-        if( pc ){
-            call();
-        }
+        call();
     });
 }
 
@@ -38,7 +36,6 @@ async function call(){
         });
 
         const offer = await pc.createOffer(sdpConstraints);
-        offer.sdp = setBandwidth(offer.sdp);
 
         await pc.setLocalDescription(offer);
 
