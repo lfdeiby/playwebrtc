@@ -46,10 +46,7 @@ function enableRoom(){
         document.querySelector('.enableroom').style.display = 'none';
         document.querySelector('.waitfor').style.display = 'block';
     })
-    .catch(function(err) {
-         alert("No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-         console.log(err);
-    });
+    .catch(notAccessToCam);
 }
 
 function handlerStartCall(){
@@ -58,10 +55,12 @@ function handlerStartCall(){
         localStream = stream;
         io.emit('call', {"signal_room": SIGNAL_ROOM});
     })
-    .catch(function(err) {
-         alert(err.message + "No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-         alert(err);
-    });
+    .catch(notAccessToCam);
+}
+
+function notAccessToCam(error){
+    alert(error.message + "No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
+    alert(error);
 }
 
 
@@ -80,10 +79,6 @@ function closePeerConnection(){
         pc.close();
     }
     pc = null;
-}
-
-function displaySignalMessage(message) {
-    signalingArea.innerHTML = signalingArea.innerHTML + "<br/>" + message;
 }
 
 window.addEventListener('beforeunload', function(){
@@ -138,15 +133,23 @@ function verifyReloadPage(){
         info['open'] = true;
         io.emit('ready', info);
         if( me.type == 'coach' ){
+            alert("RE COACH");
             document.querySelector('.enableroom').style.display = 'none';
             getUserMedia()
             .then(function(stream){
                 localStream = stream;
                 call();
-            });
-            //call();
+            })
+            .catch(notAccessToCam);
         }else{
-            handlerStartCall();
+            alert("RE CLIENT");
+            getUserMedia()
+            .then(function(stream){
+                alert("RE CLIENT THEN");
+                localStream = stream;
+                io.emit('call', {"signal_room": SIGNAL_ROOM});
+            })
+            .catch(notAccessToCam);
         }
     }else{
         io.emit('ready', info);

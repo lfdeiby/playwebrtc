@@ -25,7 +25,6 @@ function ioserver(io){
         });
 
         socket.on('ready', function(data){
-            console.log("////////////////////////////////////");
             const MESSAGE_DUPLICATE = "El usuario ya tiene una sesión abierta";
             const socketExist = _existSocketToRoom(data.signal_room, data.user_id);
             if( socketExist ){

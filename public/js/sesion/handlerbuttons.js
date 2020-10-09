@@ -34,7 +34,6 @@ function handlerMicrophone(){
 function handlerVideo(){
     if( pc !== null ){
         for( var videoTrack of localStream.getVideoTracks() ){ // stream.getVideoTracks() ){
-            displaySignalMessage("VideoTrack change: " + videoTrack.enabled.toString());
             if( videoTrack.enabled ){
                 btnVideo.classList.add('active');
                 //INFO.video('deactive');
@@ -57,7 +56,6 @@ function handlerHungup(){
 function handlerFinalize(){
     io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     if( pc !== null ){
-        displaySignalMessage("Send close connection");
         closePeerConnection();
     }
     //INFO.hungup();

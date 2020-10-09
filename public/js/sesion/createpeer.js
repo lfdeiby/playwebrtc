@@ -68,7 +68,6 @@ function createPeerConnection() {
     });
 
     pc.addEventListener('error', function(err){
-        displaySignalMessage("PC ERROR: " + err.message);
         console.log(err);
     });
 
