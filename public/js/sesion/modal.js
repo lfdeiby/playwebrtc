@@ -3,6 +3,10 @@ $(document).ready(function(){
 });
 
 var MODAL = {
+	closeAll: function(){
+		$('.toast').remove();
+	},
+
 	closeConnect: function(){
 		$('.toast.connect').remove();
 	},

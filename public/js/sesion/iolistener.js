@@ -15,6 +15,7 @@ function ioListener(io){
     });
     // Hellow
     io.on('duplicate', function(data) {
+        alert("Usuario duplicado");
         console.log(data);
         
     });

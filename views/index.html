@@ -9,6 +9,22 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/fonts/icomoon/style.css">
 	<link rel="stylesheet" href="/static/css/sesion.css">
+	<script
+	  src="https://browser.sentry-cdn.com/5.25.0/bundle.tracing.min.js"
+	  integrity="sha384-MxPEqyePOMqaz3prq1TexMEXtfnxqvet9uhebPAm5SI4Pz3Ga9HwbmE5FY2Bah20"
+	  crossorigin="anonymous"
+	></script>
+	<script type="text/javascript">
+		Sentry.init({
+		  dsn: 'https://a63d20b50ce14ff696d32149df81171b@o444936.ingest.sentry.io/5420535',
+		  integrations: [
+		    new Sentry.Integrations.BrowserTracing(),
+		  ],
+
+		  tracesSampleRate: 1.0,
+		});
+	</script>
+
 </head>
 <body>
 
