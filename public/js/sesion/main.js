@@ -146,7 +146,6 @@ function verifyReloadPage(){
             });
             //call();
         }else{
-            document.querySelector('.startCall').style.display = 'none';
             handlerStartCall();
         }
     }else{

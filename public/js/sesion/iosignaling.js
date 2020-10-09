@@ -1,6 +1,11 @@
 // SOCKET LISTENER SIGNALING
 function ioSignaling(io){
     io.on('signaling_message', async (data) => {
+        if( ! localStream ){
+            console.log("No localstream");
+            return;
+        }
+
         switch(data.type){
             case 'offer':
                 // verificar si ya esta en coneccion y rechazar
