@@ -86,7 +86,7 @@ function createPeerConnection() {
 function tryForceConnect(){
     var intervalReconnect = setInterval(function(){
         if ( WEBRTC_CONNECTED == true ) {
-            consle.log(" YA HIZO LA CONEXIÓN");
+            alert(" YA HIZO LA CONEXIÓN");
             clearInterval(intervalReconnect);
             return;
         }
@@ -96,12 +96,13 @@ function tryForceConnect(){
             return;
         }
         if(  RECONNECT_SWITCH == true ){
+            ATTEMPTS += 1;
+            alert("INTENTO NRO:" + ATTEMPTS );
             if( me.type == 'coach' ){
                 call();
             }else{
                 io.emit('call', {"signal_room": SIGNAL_ROOM});
             }
-            ATTEMPTS += 1;
             RECONNECT_SWITCH = false;
         }
     }, 2000);
