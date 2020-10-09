@@ -98,30 +98,23 @@ function updateOnlineStatus(event) {
 
     if( navigator.onLine ){
         MODAL.closeOffline();
-        tryReconnect();
+        reconnectOnOnline();
     }else{
         MODAL.offline();
         closePeerConnection();
     }
 }
 
-function tryReconnect(){
+function reconnectOnOnline(){
     MODAL.reconnect();
     setTimeout(function(){
-        if( io.connected ){
-            var info =  {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name, 'open': true};
-            console.log("Reconect info", info);
-            io.emit('ready', info);
-            if( me.type == 'coach' ){
-                call();
-            }else{
-                if( io.connected ){
-                    io.emit('call', {"signal_room": SIGNAL_ROOM});
-                }
-            }
+        io = io.connect();
+        var info =  {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name, 'open': true};
+        io.emit('ready', info);
+        if( me.type == 'coach' ){
+            call();
         }else{
-            alert("Socket caido");
-            io = io.connect();
+            io.emit('call', {"signal_room": SIGNAL_ROOM});
         }
     }, 1500);
 }
@@ -133,10 +126,32 @@ function check(){
     io.emit("check", {});
 }
 
-// INIT
-function init(){
-io.emit('ready', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
+function verifyReloadPage(){
+    var info =  {
+        "signal_room": SIGNAL_ROOM,
+        "user_id": me.id,
+        'type': me.type,
+        'name': me.name
+    };
 
+    if( localStorage.getItem(SIGNAL_ROOM) ){
+        info['open'] = true;
+        io.emit('ready', info);
+        if( me.type == 'coach' ){
+            document.querySelector('.enableroom').style.display = 'none';
+            enableRoom();
+        }else{
+            document.querySelector('.startCall').style.display = 'none';
+            handlerStartCall();
+        }
+    }else{
+        io.emit('ready', info);
+    }
+}
+
+// INIT
+
+function init(){
 if( me.type == 'coach'){
     var btnEnableRoom = document.querySelector('#enableRoom');
     btnEnableRoom.addEventListener('click', enableRoom);
@@ -149,4 +164,5 @@ if( me.type == 'coach'){
 
 ioListener(io);
 ioSignaling(io);
+verifyReloadPage();
 }

@@ -33,6 +33,7 @@ function ioListener(io){
     });
     // Start call conecction
     io.on('call_start', function(data){
+        MODAL.connect();
         call();
     });
 }

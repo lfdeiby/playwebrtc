@@ -49,7 +49,8 @@ function handlerVideo(){
 }
 
 function handlerHungup(){
-   $('#popupFinalize').addClass('active');
+    $('#popupFinalize').addClass('active');
+    localStorage.removeItem(SIGNAL_ROOM);
     return false;
 }
 
@@ -69,6 +70,7 @@ function finalizeSesion(){
 }
 
 async function handlerShareScreen(){
+    MODAL.openShare();
     if (screenShare) {
         screenShare.getTracks().forEach(t => t.stop());
         closeShareScreen();
@@ -84,6 +86,7 @@ async function handlerShareScreen(){
     });
     screenShare = stream;
     btnShare.classList.add('active');
+    MODAL.closeShare();
 }
 
 function closeShareScreen(){

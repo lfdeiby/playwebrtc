@@ -1,9 +1,35 @@
+var WEBRTC_CONNECTED = false;
+var ATTEMPTS = 0;
+var RECONNECT_SWITCH = true;
+
 // CREATE RTC CONECION
 function createPeerConnection() {
     var pc = new RTCPeerConnection(config);
 
     pc.addEventListener('icecandidate', function(e){
         const candidate = e.candidate;
+
+        /*
+         * the following code block demonstrates a failure to connect.
+         * Do not use in production.
+        if (candidate && candidate.candidate !== '') {
+            const parts = candidate.candidate.split(' ');
+            parts[5] = 10000; // replace port with 10000 to make ice fail.
+
+            io.emit('message', {
+                type: 'candidate',
+                candidate: {
+                    candidate: parts.join(' '),
+                    sdpMid: candidate.sdpMid,
+                    sdpMLineIndex: candidate.sdpMLineIndex,
+                },
+                signal_room: SIGNAL_ROOM
+            });
+
+            return;
+        }
+        */
+
         io.emit('message', {
             type: 'candidate',
             candidate: candidate,
@@ -18,16 +44,15 @@ function createPeerConnection() {
         videoRemote.srcObject = e.streams[0];
     });
 
-    /*
-    pc.addEventListener('addstream', function(e){
-        console.log("ENTRO A STREAM");
-        videoRemote.srcObject = e.stream;
-        //videoRemote.srcObject = e.streams[0];
-    });
-    */
-
     pc.addEventListener('iceconnectionstatechange', function(){
-        console.log("iceconnectionstatechange: ", pc.iceConnectionState)
+        console.log("iceconnectionstatechange: ", pc.iceConnectionState);
+        if( pc.iceConnectionState == 'disconnected' ){
+            MODAL.reconnect();
+        }
+        if( pc.iceConnectionState == 'failed' ){
+            RECONNECT_SWITCH = true;
+            tryForceConnect();
+        }
     });
 
     pc.addEventListener('connectionstatechange', function(){
@@ -47,8 +72,8 @@ function createPeerConnection() {
         console.log(err);
     });
 
-    let lastResult = null; // the last getStats result.
-    const intervalId = setInterval(async () => {
+    var lastResult = null; // the last getStats result.
+    var intervalId = setInterval(async () => {
         if (pc.signalingState === 'closed') {
             clearInterval(intervalId);
             return;
@@ -57,6 +82,30 @@ function createPeerConnection() {
     }, 2000);
 
     return pc;
+}
+
+function tryForceConnect(){
+    var intervalReconnect = setInterval(function(){
+        if ( WEBRTC_CONNECTED == true ) {
+            consle.log(" YA HIZO LA CONEXIÓN");
+            clearInterval(intervalReconnect);
+            return;
+        }
+        if ( ATTEMPTS == 3 || WEBRTC_CONNECTED == true ) {
+            clearInterval(intervalReconnect);
+            alert("No es posible conectar");
+            return;
+        }
+        if(  RECONNECT_SWITCH == true ){
+            if( me.type == 'coach' ){
+                call();
+            }else{
+                io.emit('call', {"signal_room": SIGNAL_ROOM});
+            }
+            ATTEMPTS += 1;
+            RECONNECT_SWITCH = false;
+        }
+    }, 2000);
 }
 
 function onConnectionStats(results) {
@@ -124,6 +173,8 @@ async function queryBitrateStats(pc, lastResult) {
 
 function signalingSuccess(){
     MODAL.closeReconnect();
+    MODAL.closeConnect();
+
     document.querySelector('.signal').style.display = 'none';
     document.querySelector('.remote').classList.add('active');
     document.querySelector('.local').classList.add('mini');
@@ -133,5 +184,8 @@ function signalingSuccess(){
     if( btnShare ){
         btnShare.disabled = false;
     }
+    WEBRTC_CONNECTED = true;
+    ATTEMPTS = 0;
+    localStorage.setItem(SIGNAL_ROOM, true);
     //INFO.signaling_finalize();
 }

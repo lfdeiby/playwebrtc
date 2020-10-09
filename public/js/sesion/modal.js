@@ -3,20 +3,35 @@ $(document).ready(function(){
 });
 
 var MODAL = {
-	leaveroom: function(data){
-		var user_name = data.user_name || "El usuario";
-		var html = `<div class="toast">
-			<div class="text">${user_name} ha abandonado la sesión</div>
-			<div class="close"> <span class="icon-cancel"></span> </div>
+	closeConnect: function(){
+		$('.toast.connect').remove();
+	},
+
+	closeOffline: function(){
+		$('.toast.offline').remove();
+	},
+
+	closeReconnect: function(){
+		$('.toast.reconnect').remove();
+	},
+
+	closeShare: function(){
+		$('.toast.share').remove();
+	},
+
+	connect: function(){
+		var html = `<div class="toast connect">
+			<div class="text">Conectando ... </div>
+			<div class="alert"> <span class="rotate icon-spinner2"></span> </div>
 		</div> `;
 
 		$('body').append(html);
 	},
 
-	trouble: function(data){
+	leaveroom: function(data){
 		var user_name = data.user_name || "El usuario";
 		var html = `<div class="toast">
-			<div class="text">${user_name} tiene problemas de conexión</div>
+			<div class="text">${user_name} ha abandonado la sesión</div>
 			<div class="close"> <span class="icon-cancel"></span> </div>
 		</div> `;
 
@@ -32,8 +47,23 @@ var MODAL = {
 		$('body').append(html);
 	},
 
-	closeOffline: function(){
-		$('.toast.offline').remove();
+	openShare: function(){
+		var html = `<div class="toast share">
+			<div class="text">Compartir pantalla</div>
+			<div class="alert"> <span class="icon-warning"></span> </div>
+		</div> `;
+
+		$('body').append(html);
+	},
+
+	trouble: function(data){
+		var user_name = data.user_name || "El usuario";
+		var html = `<div class="toast">
+			<div class="text">${user_name} tiene problemas de conexión</div>
+			<div class="close"> <span class="icon-cancel"></span> </div>
+		</div> `;
+
+		$('body').append(html);
 	},
 
 	reconnect: function(){
@@ -45,9 +75,6 @@ var MODAL = {
 		$('body').append(html);
 	},
 
-	closeReconnect: function(){
-		$('.toast.reconnect').remove();
-	}
 }
 
 
