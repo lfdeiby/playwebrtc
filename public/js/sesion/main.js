@@ -107,7 +107,7 @@ function updateOnlineStatus(event) {
 
 function tryReconnect(){
     MODAL.reconnect();
-    /*setTimeout(function(){*/
+    setTimeout(function(){
         if( io.connected ){
             var info =  {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name, 'open': true};
             console.log("Reconect info", info);
@@ -121,8 +121,9 @@ function tryReconnect(){
             }
         }else{
             alert("Socket caido");
+            io = io.connect();
         }
-    /*}, 1500);*/
+    }, 1500);
 }
 
 window.addEventListener('online',  updateOnlineStatus);
