@@ -123,13 +123,13 @@ async function queryBitrateStats(pc, lastResult) {
 }
 
 function signalingSuccess(){
+    MODAL.closeReconnect();
     document.querySelector('.signal').style.display = 'none';
     document.querySelector('.remote').classList.add('active');
     document.querySelector('.local').classList.add('mini');
     btnMicro.disabled = false;
     btnVideo.disabled = false;
     btnHungup.disabled = false;
-    // btnReconect.disabled = false;
     if( btnShare ){
         btnShare.disabled = false;
     }

@@ -54,6 +54,7 @@ function handlerHungup(){
 }
 
 function handlerFinalize(){
+    io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     if( pc !== null ){
         displaySignalMessage("Send close connection");
         closePeerConnection();

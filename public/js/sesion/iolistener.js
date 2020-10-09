@@ -1,5 +1,10 @@
 // SOCKETS LISTENERS
 function ioListener(io){
+
+    io.on('info', function(data) {
+        console.log("CHECK", data);
+    });
+
     // Hellow
     io.on('hello', function(data) {
         console.log(data);
@@ -7,6 +12,11 @@ function ioListener(io){
             document.querySelector('.startCall').style.display = 'block';
             document.querySelector('.waitfor').style.display = 'none';
         }
+    });
+    // Hellow
+    io.on('duplicate', function(data) {
+        console.log(data);
+        
     });
     // Peer close
     io.on('exit', function(data) {

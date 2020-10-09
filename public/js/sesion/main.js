@@ -80,7 +80,6 @@ function closePeerConnection(){
         pc.close();
     }
     pc = null;
-    io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
 }
 
 function displaySignalMessage(message) {
@@ -108,8 +107,11 @@ function updateOnlineStatus(event) {
 
 function tryReconnect(){
     MODAL.reconnect();
-    setTimeout(function(){
+    /*setTimeout(function(){*/
         if( io.connected ){
+            var info =  {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name, 'open': true};
+            console.log("Reconect info", info);
+            io.emit('ready', info);
             if( me.type == 'coach' ){
                 call();
             }else{
@@ -120,13 +122,15 @@ function tryReconnect(){
         }else{
             alert("Socket caido");
         }
-    }, 1500);
+    /*}, 1500);*/
 }
 
 window.addEventListener('online',  updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-
+function check(){
+    io.emit("check", {});
+}
 
 // INIT
 function init(){
