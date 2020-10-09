@@ -139,7 +139,12 @@ function verifyReloadPage(){
         io.emit('ready', info);
         if( me.type == 'coach' ){
             document.querySelector('.enableroom').style.display = 'none';
-            enableRoom();
+            getUserMedia()
+            .then(function(stream){
+                localStream = stream;
+                call();
+            });
+            //call();
         }else{
             document.querySelector('.startCall').style.display = 'none';
             handlerStartCall();

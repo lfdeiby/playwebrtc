@@ -84,7 +84,6 @@ function ioserver(io){
         });
 
         socket.on('message', function(data){
-            console.log("message");
             socket.to(data.signal_room).emit('signaling_message', data );
         });
 
