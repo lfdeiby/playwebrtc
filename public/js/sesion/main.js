@@ -133,7 +133,6 @@ function verifyReloadPage(){
         info['open'] = true;
         io.emit('ready', info);
         if( me.type == 'coach' ){
-            alert("RE COACH");
             document.querySelector('.enableroom').style.display = 'none';
             getUserMedia()
             .then(function(stream){
@@ -142,10 +141,8 @@ function verifyReloadPage(){
             })
             .catch(notAccessToCam);
         }else{
-            alert("RE CLIENT");
             getUserMedia()
             .then(function(stream){
-                alert("RE CLIENT THEN");
                 localStream = stream;
                 io.emit('call', {"signal_room": SIGNAL_ROOM});
             })
