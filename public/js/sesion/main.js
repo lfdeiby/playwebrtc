@@ -11,26 +11,14 @@ var localStream;
 var screenShare;
 var pc;
 var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true };
-if( me.type == 'coach'){
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 20, //width: 640,//height: 480,
-        frameRate: 15,
-        facingMode: 'user',
-        //maxBitrate: 125
-    }
-};
-}else{
-var configMediaStream = {
-    audio: true, 
-    video: {
-        width: 20, //width: 640,//height: 480,
+        width: 360, //width: 640,//height: 480,
         frameRate: 15,
         facingMode: 'user'
     }
 };
-}
 
 var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
@@ -59,8 +47,19 @@ function handlerStartCall(){
 }
 
 function notAccessToCam(error){
-    alert(error.message + "No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
-    alert(error);
+    alert(error.message);
+    if( error.message == 'Invalid constraint'){
+        if( configMediaStream.video.width == 360 ){
+            configMediaStream.video.width = 640;
+            if( me.type == 'coach' ){
+                enableRoom();
+            }else{
+                handlerStartCall();
+            }
+            return;
+        }
+    }
+    alert(error.message + ": No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
 }
 
 
@@ -170,3 +169,5 @@ ioListener(io);
 ioSignaling(io);
 verifyReloadPage();
 }
+
+// Invalid constraint
