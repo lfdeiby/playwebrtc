@@ -15,7 +15,7 @@ if( me.type == 'coach'){
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 640, //width: 640,//height: 480,
+        width: 20, //width: 640,//height: 480,
         frameRate: 15,
         facingMode: 'user',
         //maxBitrate: 125
@@ -25,7 +25,7 @@ var configMediaStream = {
 var configMediaStream = {
     audio: true, 
     video: {
-        width: 640, //width: 640,//height: 480,
+        width: 20, //width: 640,//height: 480,
         frameRate: 15,
         facingMode: 'user'
     }
