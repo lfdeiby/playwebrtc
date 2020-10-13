@@ -46,7 +46,6 @@ function handlerStartCall(){
 }
 
 function notAccessToCam(error){
-    alert(error.message);
     if( error.message == 'Invalid constraint'){
         if( configMediaStream.video.width == 360 ){
             configMediaStream.video.width = 640;
