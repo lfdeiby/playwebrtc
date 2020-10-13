@@ -141,7 +141,7 @@ function onConnectionStats(results) {
 
 async function queryBitrateStats(pc, lastResult) {
     const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
-    if (!sender) {
+    if (!sender || sender == undefined) {
         return;
     }
     const stats = await sender.getStats();
