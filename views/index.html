@@ -56,16 +56,32 @@
 			</select>
 		</div>
 
-		
-		<div id="coach" class="signal" style="display:none">
-			<div class="enableroom">
-				<p>Bienvenid@ por favor haz click en el siguiente botón para habilitar la sala.</p>
-				<button id="enableRoom" class="btn success">Habilitar sala</button>
-			</div>
-			<div class="waitfor" style="display:none;">
-				<p> Esperando a: <b>Usuario 2</b></p>
+		<!--
+		<div class="popup error">
+			<div class="content">
+				<div class="header">
+					<div class="col col2 middle">
+						<div>
+							<img class="logo" src="/static/img/logo.png" alt="Docdoc">
+						</div>
+						<div class="text-right">
+						</div>
+					</div>
+				</div>
+				<div class="enableroom">
+					<h3><b style="color:#f45a69;">Error: Lo sentimos</b> </h3>
+					<p> El navegador no soporta la tecnología para la video conferencia.</p>
+					<p> Por favor verifique que su conexión a internet sea estable.</p>
+					<p> Actualice su navegador, o puede usar lo siguientes navegadores:</p>
+					<ul>
+						<li>Para dispositivos Apple, ingrese desde el navegador Safari.</li>
+						<li>Para otros dispositivos ingrese desde el navegador Chrome o Firefox.</li>
+					</ul>
+					<br>
+				</div>
 			</div>
 		</div>
+		 -->
 		
 		<div id="client" class="signal" style="display:none">
 			<div class="waitfor">
@@ -94,7 +110,7 @@
 				</button>
 			</div>
 			<div>
-				<button id="btnShare" disabled title="Compartir pantalla"> 
+				<button id="btnShare" disabled title="Compartir pantalla" style="display: none;"> 
 					<span class="icon-screen_share"></span>
 				</button>
 			</div>
@@ -104,7 +120,7 @@
 	</div>
     
 
-	<div id="popupConfig" class="popup">
+	<div id="popupConfig" class="popup" style="display:none;">
 		<div class="content">
 			<header>
 				<div class="col col2">
@@ -163,13 +179,17 @@
 			id: '10',
 			name: 'Usuario 1',
 			type: 'client',
-			status: 'disable'
+			status: 'disable',
+			country_code: '591',
+			phone: '60028282'
 		};
 		var other = {
 			id: '11',
 			name: 'Usuario 2',
 			type: 'coach',
-			status: 'disable'
+			status: 'disable',
+			country_code: '591',
+			phone: '78415303'
 		};
 
 
@@ -178,9 +198,6 @@
 			var value = document.querySelector('#user').value;
 			if( value == 'coach'){
 				me = other;
-				document.querySelector('#coach').style.display = 'block';
-			}else if(value == 'client'){
-				document.querySelector('#client').style.display = 'block';
 			}
 
 			document.querySelector('#select').style.display = 'none';
@@ -192,6 +209,7 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.4/mobile-detect.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
 
+	<script src="/static/js/sesion/popup.js"></script>
 	<script src="/static/js/sesion/modal.js"></script>
 	<script src="/static/js/sesion/handlerbuttons.js"></script>
 	<script src="/static/js/sesion/iolistener.js"></script>

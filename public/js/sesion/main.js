@@ -30,9 +30,8 @@ function enableRoom(){
     .then(function(stream){
         localStream = stream;
         io.emit('open', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
-        //INFO.habilitar_sala();
-        document.querySelector('.enableroom').style.display = 'none';
-        document.querySelector('.waitfor').style.display = 'block';
+        POPUP.closeAll();
+        POPUP.doctorWait(other, SIGNAL_ROOM);
     })
     .catch(notAccessToCam);
 }
@@ -64,7 +63,7 @@ function notAccessToCam(error){
 
 
 async function getUserMedia(){
-    var stream = await navigator.mediaDevices.getUserMedia(configMediaStream)
+    var stream = await navigator.mediaDevices.getUserMedia(configMediaStream);
     
     videoLocal.autoplay = true;
     videoLocal.muted = true;
@@ -82,7 +81,6 @@ function closePeerConnection(){
 
 window.addEventListener('beforeunload', function(){
     if( pc != undefined){
-        //INFO.exit_page();
         io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     }
 });
@@ -116,10 +114,6 @@ function reconnectOnOnline(){
 window.addEventListener('online',  updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-function check(){
-    io.emit("check", {});
-}
-
 function verifyReloadPage(){
     var info =  {
         "signal_room": SIGNAL_ROOM,
@@ -132,7 +126,6 @@ function verifyReloadPage(){
         info['open'] = true;
         io.emit('ready', info);
         if( me.type == 'coach' ){
-            document.querySelector('.enableroom').style.display = 'none';
             getUserMedia()
             .then(function(stream){
                 localStream = stream;
@@ -149,25 +142,39 @@ function verifyReloadPage(){
         }
     }else{
         io.emit('ready', info);
+        if( me.type == 'coach' ){
+            POPUP.doctorEnter();
+        }else{
+            POPUP.pacientWait(other, SIGNAL_ROOM);
+        }
     }
 }
 
-// INIT
 
-function init(){
-if( me.type == 'coach'){
-    var btnEnableRoom = document.querySelector('#enableRoom');
-    btnEnableRoom.addEventListener('click', enableRoom);
-    btnShare = document.getElementById('btnShare');
-    btnShare.addEventListener('click', handlerShareScreen);
-}else{
-    var btnStartCall = document.getElementById('startCall');
-    btnStartCall.addEventListener('click', handlerStartCall);
+function verifyBrowser(){
+    if( adapter.browserDetails.browser.indexOf('Not a supported') > 0){
+        POPUP.browserNotSupport();
+        return false;
+    }
+    if( ('ontouchstart' in document.documentElement ) == false ){
+        document.getElementById('btnShare').style.display = 'block';
+    }
+    return true;
 }
 
-ioListener(io);
-ioSignaling(io);
-verifyReloadPage();
+// INIT
+function init(){
+if( me.type == 'coach'){
+    btnShare = document.getElementById('btnShare');
+    btnShare.addEventListener('click', handlerShareScreen);
+}
+
+if( verifyBrowser() ){
+    ioListener(io);
+    ioSignaling(io);
+    verifyReloadPage();
+}
+
 }
 
 // Invalid constraint

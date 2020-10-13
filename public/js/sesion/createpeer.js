@@ -173,6 +173,7 @@ async function queryBitrateStats(pc, lastResult) {
 
 function signalingSuccess(){
     MODAL.closeAll();
+    POPUP.closeAll();
 
     document.querySelector('.signal').style.display = 'none';
     document.querySelector('.remote').classList.add('active');

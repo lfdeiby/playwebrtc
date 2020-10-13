@@ -27,8 +27,8 @@ function ioListener(io){
     // Enable room to call
     io.on('open_room', function(data) {
         if( data.type == 'coach' ){
-            document.querySelector('.startCall').style.display = 'block';
-            document.querySelector('.waitfor').style.display = 'none';
+            POPUP.closeAll();
+            POPUP.pacientEnter(other);
         }
     });
     // Start call conecction

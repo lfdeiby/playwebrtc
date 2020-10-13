@@ -1,7 +1,3 @@
-$(document).ready(function(){
-	$(document).on("click", ".toast .close", closeToast);
-});
-
 var MODAL = {
 	closeAll: function(){
 		$('.toast').remove();
@@ -10,7 +6,7 @@ var MODAL = {
 	closeConnect: function(){
 		$('.toast.connect').remove();
 	},
-
+ 
 	closeOffline: function(){
 		$('.toast.offline').remove();
 	},
@@ -81,6 +77,9 @@ var MODAL = {
 
 }
 
+$(document).ready(function(){
+	$(document).on("click", ".toast .close", closeToast);
+});
 
 function closeToast(){
 	var parent = $(this).parent();

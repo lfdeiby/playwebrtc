@@ -20,10 +20,8 @@ function handlerMicrophone(){
         for( var audioTrack of localStream.getAudioTracks() ){ // stream.getAudioTracks() ){
             if( audioTrack.enabled ){
                 btnMicro.classList.add('active');
-                //INFO.microphone('deactive');
             }else{
                 btnMicro.classList.remove('active');
-                //INFO.microphone('active');
             }
             audioTrack.enabled = !audioTrack.enabled;
         }
@@ -36,10 +34,8 @@ function handlerVideo(){
         for( var videoTrack of localStream.getVideoTracks() ){ // stream.getVideoTracks() ){
             if( videoTrack.enabled ){
                 btnVideo.classList.add('active');
-                //INFO.video('deactive');
             }else{
                 btnVideo.classList.remove('active');
-                //INFO.video('active');
             }
             videoTrack.enabled = !videoTrack.enabled;
         }
@@ -58,7 +54,6 @@ function handlerFinalize(){
     if( pc !== null ){
         closePeerConnection();
     }
-    //INFO.hungup();
     finalizeSesion();
 }
 
