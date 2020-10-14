@@ -97,7 +97,6 @@ function tryForceConnect(){
         }
         if(  RECONNECT_SWITCH == true ){
             ATTEMPTS += 1;
-            alert("INTENTO NRO:" + ATTEMPTS );
             if( me.type == 'coach' ){
                 call();
             }else{

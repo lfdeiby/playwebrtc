@@ -42,6 +42,7 @@ function ioserver(io){
             socket.user_open = data.open || false;
             socket.join(data.signal_room);
 
+            console.log("CONECTO", data);
             const otherSocket = _getOtherSocket(data.signal_room, data.user_id);
             let result = {};
             if( otherSocket){

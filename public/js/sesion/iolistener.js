@@ -7,9 +7,12 @@ function ioListener(io){
 
     // Hellow
     io.on('hello', function(data) {
+        console.log(data);
         if( data.type == 'coach' && data.open == true ){
-            document.querySelector('.startCall').style.display = 'block';
-            document.querySelector('.waitfor').style.display = 'none';
+            POPUP.closeAll();
+            POPUP.pacientEnter(other)
+            //document.querySelector('.startCall').style.display = 'block';
+            //document.querySelector('.waitfor').style.display = 'none';
         }
     });
     // Hellow

@@ -455,11 +455,13 @@ span.rotate {
     #logo{
         width: 35px;
     }
+    /*
     .signal{
         top: 50%;
         transform: translate(-50%, -50%);
         max-width: 100%;
     }
+    */
     .video.mini{
         background: transparent;
         opacity: 1;
