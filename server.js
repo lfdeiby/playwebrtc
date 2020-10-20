@@ -56,6 +56,11 @@ app.get('/', function(req, res){
     //res.render('index.html', {name:'', token:[]});
 });
 
+app.post('/sesion/api/info/:room', function(req, res){
+    //console.log(req.body);
+    return res.send("ok");
+});
+
 var ioconection = require('./ioserver');
 ioconection(io);
 

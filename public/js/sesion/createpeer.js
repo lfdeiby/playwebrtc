@@ -7,29 +7,7 @@ function createPeerConnection() {
     var pc = new RTCPeerConnection(config);
 
     pc.addEventListener('icecandidate', function(e){
-        const candidate = e.candidate;
-
-        /*
-         * the following code block demonstrates a failure to connect.
-         * Do not use in production.
-        if (candidate && candidate.candidate !== '') {
-            const parts = candidate.candidate.split(' ');
-            parts[5] = 10000; // replace port with 10000 to make ice fail.
-
-            io.emit('message', {
-                type: 'candidate',
-                candidate: {
-                    candidate: parts.join(' '),
-                    sdpMid: candidate.sdpMid,
-                    sdpMLineIndex: candidate.sdpMLineIndex,
-                },
-                signal_room: SIGNAL_ROOM
-            });
-
-            return;
-        }
-        */
-
+        var candidate = e.candidate;
         io.emit('message', {
             type: 'candidate',
             candidate: candidate,
@@ -39,7 +17,7 @@ function createPeerConnection() {
 
     pc.addEventListener('track', function(e){
         videoRemote.onloadedmetadata = function(){
-            console.log("video remoto cargado");
+            //console.log("video remoto cargado");
         }
         videoRemote.srcObject = e.streams[0];
     });
@@ -47,11 +25,9 @@ function createPeerConnection() {
     pc.addEventListener('iceconnectionstatechange', function(){
         console.log("iceconnectionstatechange: ", pc.iceConnectionState);
         if( pc.iceConnectionState == 'disconnected' ){
+            WEBRTC_CONNECTED = false;
+            MODAL.closeAll();
             MODAL.reconnect();
-        }
-        if( pc.iceConnectionState == 'failed' ){
-            RECONNECT_SWITCH = true;
-            tryForceConnect();
         }
     });
 
@@ -61,6 +37,10 @@ function createPeerConnection() {
             signalingSuccess();
             pc.getStats().then(onConnectionStats);
         }
+        if( pc.connectionState == 'failed' ){
+            RECONNECT_SWITCH = true;
+            tryForceConnect();
+        }
     });
 
     pc.addEventListener('signalinstatechange', function(){
@@ -68,6 +48,7 @@ function createPeerConnection() {
     });
 
     pc.addEventListener('error', function(err){
+        INFO.error_signaling(err.message);
         console.log(err);
     });
 
@@ -84,15 +65,15 @@ function createPeerConnection() {
 }
 
 function tryForceConnect(){
+    var time1 = Date.now();
     var intervalReconnect = setInterval(function(){
         if ( WEBRTC_CONNECTED == true ) {
-            alert(" YA HIZO LA CONEXIÓN");
             clearInterval(intervalReconnect);
             return;
         }
         if ( ATTEMPTS == 3 || WEBRTC_CONNECTED == true ) {
+            POPUP.notConnect(other);
             clearInterval(intervalReconnect);
-            alert("No es posible conectar");
             return;
         }
         if(  RECONNECT_SWITCH == true ){
@@ -103,6 +84,12 @@ function tryForceConnect(){
                 io.emit('call', {"signal_room": SIGNAL_ROOM});
             }
             RECONNECT_SWITCH = false;
+        }
+        var time2 = Date.now();
+        var difftime = (time2 - time1) / 1000;
+        if( difftime > 15 ){
+            POPUP.notConnect(other);
+            clearInterval(intervalReconnect);
         }
     }, 2000);
 }
@@ -129,18 +116,21 @@ function onConnectionStats(results) {
     if (activeCandidatePair && activeCandidatePair.remoteCandidateId) {
         remoteCandidate = results.get(activeCandidatePair.remoteCandidateId);
     }
-    
+
     if (remoteCandidate) {
         // Statistics are a bit of a mess still...
-        console.log('Remote is',
-        remoteCandidate.address || remoteCandidate.ip || remoteCandidate.ipAddress,
-        remoteCandidate.port || remoteCandidate.portNumber);
+        var connectString = (remoteCandidate.address || remoteCandidate.ip || remoteCandidate.ipAddress) 
+            + ":" + ( remoteCandidate.port || remoteCandidate.portNumber )
+            + " - " + ( remoteCandidate.candidateType )
+            + " | " + ( remoteCandidate.protocol );
+
+        INFO.webrtc_connect(connectString);
     }
 }
 
 async function queryBitrateStats(pc, lastResult) {
     const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
-    if (!sender || sender == undefined) {
+    if (pc == null || !sender ) {
         return;
     }
     const stats = await sender.getStats();
@@ -174,7 +164,6 @@ function signalingSuccess(){
     MODAL.closeAll();
     POPUP.closeAll();
 
-    document.querySelector('.signal').style.display = 'none';
     document.querySelector('.remote').classList.add('active');
     document.querySelector('.local').classList.add('mini');
     btnMicro.disabled = false;
@@ -186,5 +175,27 @@ function signalingSuccess(){
     WEBRTC_CONNECTED = true;
     ATTEMPTS = 0;
     localStorage.setItem(SIGNAL_ROOM, true);
-    //INFO.signaling_finalize();
+    INFO.signaling_finalize();
+}
+
+function defineBandwidth(){
+    const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+    if (!sender) {
+        return;
+    }
+    const parameters = sender.getParameters();
+    if (!parameters.encodings) { // Firefox workaround.
+      parameters.encodings = [{}];
+    }
+
+    if (bandwidth === 'unlimited') {
+      delete parameters.encodings[0].maxBitrate;
+    } else {
+      parameters.encodings[0].maxBitrate = bandwidth * 1000;
+    }
+    sender.setParameters(parameters)
+        .then(() => {
+          //bandwidthSelector.disabled = false;
+        })
+        .catch(e => console.error(e));
 }

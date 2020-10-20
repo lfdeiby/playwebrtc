@@ -49,7 +49,7 @@ var MODAL = {
 
 	openShare: function(){
 		var html = `<div class="toast share">
-			<div class="text">Compartir pantalla</div>
+			<div class="text">Preparando para compartir</div>
 			<div class="alert"> <span class="icon-warning"></span> </div>
 		</div> `;
 
@@ -78,10 +78,11 @@ var MODAL = {
 }
 
 $(document).ready(function(){
-	$(document).on("click", ".toast .close", closeToast);
+	$(document).on("click", ".toast", closeToast);
 });
 
 function closeToast(){
-	var parent = $(this).parent();
-	parent.remove();
+	$(this).remove();
+	/*var parent = $(this).parent();
+	parent.remove();*/
 }

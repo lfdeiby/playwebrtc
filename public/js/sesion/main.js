@@ -32,6 +32,7 @@ function enableRoom(){
         io.emit('open', {"signal_room": SIGNAL_ROOM, "user_id": me.id, 'type': me.type, 'name': me.name});
         POPUP.closeAll();
         POPUP.doctorWait(other, SIGNAL_ROOM);
+        INFO.habilitar_sala();
     })
     .catch(notAccessToCam);
 }
@@ -41,6 +42,7 @@ function handlerStartCall(){
     .then(function(stream){
         localStream = stream;
         io.emit('call', {"signal_room": SIGNAL_ROOM});
+        INFO.start_call();
     })
     .catch(notAccessToCam);
 }
@@ -57,6 +59,7 @@ function notAccessToCam(error){
             return;
         }
     }
+    INFO.camera_error(error.message);
     alert(error.message + ": No hemos podido acceder a la camara\npor favor vuelva a cargar la página y permita el acceso.");
 }
 
@@ -90,6 +93,7 @@ function updateOnlineStatus(event) {
     if( navigator.onLine ){
         MODAL.closeOffline();
         reconnectOnOnline();
+        INFO.error_offline("paso de offline a online");
     }else{
         MODAL.offline();
         closePeerConnection();
@@ -153,20 +157,21 @@ function verifyReloadPage(){
 function verifyBrowser(){
     if( adapter.browserDetails.browser.indexOf('Not a supported') > 0){
         POPUP.browserNotSupport();
+        INFO.error_browser(window.navigator.userAgent);
         return false;
     }
     if( ('ontouchstart' in document.documentElement ) == false ){
-        document.getElementById('btnShare').style.display = 'block';
+        if( me.type == 'coach'){
+            btnShare = document.getElementById('btnShare');
+            btnShare.addEventListener('click', handlerShareScreen);
+            document.getElementById('btnShare').style.display = 'block';
+        }
     }
     return true;
 }
 
 // INIT
 function init(){
-if( me.type == 'coach'){
-    btnShare = document.getElementById('btnShare');
-    btnShare.addEventListener('click', handlerShareScreen);
-}
 
 if( verifyBrowser() ){
     ioListener(io);
@@ -176,4 +181,3 @@ if( verifyBrowser() ){
 
 }
 
-// Invalid constraint

@@ -19,7 +19,8 @@ function ioSignaling(io){
                 });
 
                 var answer = await pc.createAnswer();
-
+                //answer.sdp += "a=fmtp:100 x-google-max-bitrate=250\r\n";
+                //console.log(answer.sdp);
                 await pc.setLocalDescription(answer);
                 io.emit('message', {
                     type: 'answer',
@@ -37,7 +38,7 @@ function ioSignaling(io){
                 break;
 
             case 'candidate':
-
+                if( data.candidate == null ) return;
                 await pc.addIceCandidate(data.candidate);
                 break;
 

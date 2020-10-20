@@ -94,7 +94,12 @@ a{
 	color: var(--color-secondary);
 	font-weight: bold;
 }
-
+.btn.dark{
+    background: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+    color: #FFF;
+    font-weight: bold;
+}
 #btnMicro::after{
     content: ' ';
     background: transparent;
@@ -292,6 +297,7 @@ button{
     align-items: center;
     /*opacity: 0;*/
     /*z-index: -2;*/
+    z-index: 5;
     transition: all .2s lienar;
 }
 .popup.active{
@@ -305,12 +311,13 @@ button{
     padding: 10px 15px;
     max-width: 500px;
 }
-.popup .close{
+.popup .icon.close{
     background: transparent;
     color: #515151;
     border-radius: 50%;
     border: none;
     font-size: 22px;
+    margin-top: 5px;
 }
 .popup .header{
     border-bottom: 1px solid rgba(50,50,50,.1);
@@ -454,6 +461,10 @@ span.rotate {
     }
     #logo{
         width: 35px;
+    }
+    .toast{
+        bottom: 65px;
+        right:20px;
     }
     /*
     .signal{

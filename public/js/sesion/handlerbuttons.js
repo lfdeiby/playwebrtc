@@ -3,14 +3,13 @@ var btnShare = null;
 var btnMicro = document.querySelector('#btnMicro');
 var btnHungup = document.querySelector('#btnHungup');
 var btnVideo = document.querySelector('#btnVideo');
-var btnFinalize = document.querySelector('#btnFinalize');
 
 
 // LISTENER TO DOM ELEMENTS
 btnMicro.addEventListener('click', handlerMicrophone);
 btnHungup.addEventListener('click', handlerHungup);
 btnVideo.addEventListener('click', handlerVideo);
-btnFinalize.addEventListener('click', handlerFinalize);
+
 
 
 
@@ -20,8 +19,10 @@ function handlerMicrophone(){
         for( var audioTrack of localStream.getAudioTracks() ){ // stream.getAudioTracks() ){
             if( audioTrack.enabled ){
                 btnMicro.classList.add('active');
+                INFO.microphone('deactive');
             }else{
                 btnMicro.classList.remove('active');
+                INFO.microphone('active');
             }
             audioTrack.enabled = !audioTrack.enabled;
         }
@@ -34,8 +35,10 @@ function handlerVideo(){
         for( var videoTrack of localStream.getVideoTracks() ){ // stream.getVideoTracks() ){
             if( videoTrack.enabled ){
                 btnVideo.classList.add('active');
+                INFO.video('deactive');
             }else{
                 btnVideo.classList.remove('active');
+                INFO.video('active');
             }
             videoTrack.enabled = !videoTrack.enabled;
         }
@@ -44,12 +47,13 @@ function handlerVideo(){
 }
 
 function handlerHungup(){
-    $('#popupFinalize').addClass('active');
-    localStorage.removeItem(SIGNAL_ROOM);
+    INFO.hungup();
+    POPUP.finalize();
     return false;
 }
 
 function handlerFinalize(){
+    localStorage.removeItem(SIGNAL_ROOM);
     io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     if( pc !== null ){
         closePeerConnection();
@@ -67,6 +71,7 @@ async function handlerShareScreen(){
     if (screenShare) {
         screenShare.getTracks().forEach(t => t.stop());
         closeShareScreen();
+        INFO.sharescreen('deactive');
         return;
     }
     const stream = await navigator.mediaDevices.getDisplayMedia({video: true});
@@ -75,11 +80,14 @@ async function handlerShareScreen(){
     videoLocal.srcObject = stream;
     track.addEventListener('ended', () => {
         // 'Screensharing ended via the browser UI'
+        MODAL.closeShare();
         closeShareScreen();
+        INFO.sharescreen('deactive');
     });
     screenShare = stream;
     btnShare.classList.add('active');
     MODAL.closeShare();
+    INFO.sharescreen('active');
 }
 
 function closeShareScreen(){
