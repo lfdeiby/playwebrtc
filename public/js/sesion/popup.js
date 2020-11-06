@@ -228,6 +228,7 @@ function _notConnect(user){
 							<img class="logo" src="/static/img/logo.png" alt="Docdoc">
 						</div>
 						<div class="text-right">
+							<button class="icon close"> <span class="icon-times-circle"></span> </button>
 						</div>
 					</div>
 				</div>

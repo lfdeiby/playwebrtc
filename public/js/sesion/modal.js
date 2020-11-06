@@ -75,6 +75,15 @@ var MODAL = {
 		$('body').append(html);
 	},
 
+	finalize: function(){
+		var html = `<div class="toast reconnect">
+			<div class="text">Se finalizó la sesión</div>
+			<div class="close"> <span class="icon-cancel"></span> </div>
+		</div> `;
+
+		$('body').append(html);
+	},
+
 }
 
 $(document).ready(function(){

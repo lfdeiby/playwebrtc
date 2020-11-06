@@ -54,7 +54,7 @@ function handlerHungup(){
 
 function handlerFinalize(){
     localStorage.removeItem(SIGNAL_ROOM);
-    io.emit('bye', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
+    io.emit('end', {"signal_room": SIGNAL_ROOM, "user_id": me.id});
     if( pc !== null ){
         closePeerConnection();
     }

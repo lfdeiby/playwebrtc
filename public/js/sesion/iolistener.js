@@ -25,6 +25,14 @@ function ioListener(io){
         MODAL.leaveroom(data);
         closePeerConnection();
     });
+    // Finalize sesion
+    io.on('finalize', function(data) {
+        MODAL.finalize();
+        localStorage.removeItem(SIGNAL_ROOM);
+        if( pc !== null ){
+            closePeerConnection();
+        }
+    });
     // Enable room to call
     io.on('open_room', function(data) {
         if( data.type == 'coach' ){
@@ -47,7 +55,14 @@ async function call(){
             pc.addTrack(track, localStream);
         });
 
-        const offer = await pc.createOffer(sdpConstraints);
+        let offer = await pc.createOffer(sdpConstraints);
+
+        offer.sdp += "m=audio 54312 RTP/AVP 101";
+        offer.sdp += "a=rtpmap:101 opus/48000/2";
+        offer.sdp += "a=fmtp:101 maxplaybackrate=16000; sprop-maxcapturerate=16000";
+
+        offer.sdp = _useOPUSCodec(offer.sdp);
+
 
         await pc.setLocalDescription(offer);
 
@@ -57,5 +72,13 @@ async function call(){
             signal_room: SIGNAL_ROOM
         });
     }
+}
+
+function _useOPUSCodec(sdp){
+    var custom_sdp = sdp;
+    custom_sdp += "m=audio 54312 RTP/AVP 101";
+    custom_sdp += "a=rtpmap:101 opus/48000/2";
+    custom_sdp += "a=fmtp:101 maxplaybackrate=16000; sprop-maxcapturerate=16000";
+    return custom_sdp;
 }
 

@@ -138,6 +138,8 @@ a{
     transform: rotate(-40deg);
     width: 30px;
     z-index: -1;
+    top: 23px;
+    left: 10px;
 }
 #btnShare.active::after{
     background: var(--color-dark);

@@ -32,7 +32,6 @@ function ioserver(io){
 
             socket.emit('hello', result);
             //socket.to(data.signal_room).emit('join', result);
-            
         });
 
         socket.on('open', function(data){
@@ -47,6 +46,13 @@ function ioserver(io){
         socket.on('bye', function(data){
             const result = { id: data.user_id, user_name: socket.user_name };
             socket.to(data.signal_room).emit('exit', result);
+
+            socket.leave(data.signal_room);
+        });
+
+        socket.on('end', function(data){
+            const result = { id: data.user_id, user_name: socket.user_name };
+            socket.to(data.signal_room).emit('finalize', result);
 
             socket.leave(data.signal_room);
         });
