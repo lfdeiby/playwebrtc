@@ -1,4 +1,4 @@
-require('dotenv').config()
+//require('dotenv').config();
 var cookieParser = require('cookie-parser');
 var expressSesion = require('express-session');
 var expressFlash = require('express-flash');
@@ -39,10 +39,6 @@ nunjucks.configure('views', {
 })
 
 app.get('/', function(req, res){
-    /**/
-    console.log("///////////////////////////////////////////");
-    console.log(process.env.TWILIO_ID);
-    console.log(process.env.TWILIO_TOKEN);
 
     const accountSid = "AC08c974e15c6d582b34e82aeb43c4827e"; //process.env.TWILIO_ID;
     const authToken  = "0e19040d4e7d556afbc7cf492c1495e7"; // process.env.TWILIO_TOKEN;
