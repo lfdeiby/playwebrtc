@@ -8,9 +8,10 @@
 // GLOBAL VARIABLES
 io = io.connect();
 var localStream;
+var remoteStream;
 var screenShare;
 var pc;
-var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true };
+var sdpConstraints = { offerToReceiveAudio: true, offerToReceiveVideo: true, iceRestart: true };
 var configMediaStream = {
     audio: true, 
     video: {
@@ -19,7 +20,7 @@ var configMediaStream = {
         facingMode: 'user'
     }
 };
-
+// console.log(configMediaStream);
 var videoLocal = document.querySelector("#videoLocal");
 var videoRemote = document.querySelector("#videoRemote");
 var signalingArea = document.querySelector("#signalingArea");
@@ -71,10 +72,25 @@ async function getUserMedia(){
     videoLocal.muted = true;
     videoLocal.srcObject = stream;
     document.querySelector('.local').classList.add('active');
+
+/*
+    pc = new RTCPeerConnection(config);
+    pc.onicecandidate = function(event){
+        console.log("GATH STATE: " + event.target.iceGatheringState  , event.candidate);
+    }
+*/
     return stream;
 }
-
+/*
+function handleChannel(chanel){
+    chanel.onerror = function(err){console.log("Error", err);}
+    chanel.onclose = function(evt){console.log("Close", evt);}
+    chanel.onopen = function(evt){console.log("Open"); chanel.send("hola Peer");}
+    chanel.onmessage = function(msg){console.log(msg.data);}
+}
+*/
 function closePeerConnection(){
+    console.log("CLOSE PEER CONECCTION");
     if( pc != null ){
         pc.close();
     }
@@ -155,6 +171,7 @@ function verifyReloadPage(){
 
 
 function verifyBrowser(){
+    INFO.browser(window.navigator.userAgent);
     if( adapter.browserDetails.browser.indexOf('Not a supported') > 0){
         POPUP.browserNotSupport();
         INFO.error_browser(window.navigator.userAgent);

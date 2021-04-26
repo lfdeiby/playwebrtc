@@ -43,37 +43,51 @@ function ioListener(io){
     // Start call conecction
     io.on('call_start', function(data){
         MODAL.connect();
-        call();
+        if( pc ){
+            makeOffer(true);
+        }else{
+            call();
+        }
     });
 }
 
 async function call(){
     if( me.type == 'coach'){
-        pc = createPeerConnection();
+        createPeerConnection();
 
         localStream.getTracks().forEach(function( track ){
             pc.addTrack(track, localStream);
         });
+        //pc.addStream(localStream);
 
-        let offer = await pc.createOffer(sdpConstraints);
-
-        offer.sdp += "m=audio 54312 RTP/AVP 101";
-        offer.sdp += "a=rtpmap:101 opus/48000/2";
-        offer.sdp += "a=fmtp:101 maxplaybackrate=16000; sprop-maxcapturerate=16000";
-
-        offer.sdp = _useOPUSCodec(offer.sdp);
-
-
-        await pc.setLocalDescription(offer);
-
-        io.emit('message', {
-            type: 'offer',
-            sdp: offer.sdp,
-            signal_room: SIGNAL_ROOM
-        });
+        await makeOffer(false);
     }
 }
 
+async function makeOffer(iceRestart){
+    if( iceRestart ){
+        sdpConstraints.iceRestart  = true;
+    }
+
+    let offer = await pc.createOffer(sdpConstraints);
+
+    //offer.sdp += "m=audio 54312 RTP/AVP 101";
+    //offer.sdp += "a=rtpmap:101 opus/48000/2";
+    //offer.sdp += "a=fmtp:101 maxplaybackrate=16000; sprop-maxcapturerate=16000";
+    //offer.sdp = _useOPUSCodec(offer.sdp);
+    //console.log(offer.sdp);
+    INFO.offer(offer.sdp);
+
+    await pc.setLocalDescription(offer);
+
+    io.emit('message', {
+        type: 'offer',
+        sdp: offer.sdp,
+        signal_room: SIGNAL_ROOM
+    });
+}
+
+/*
 function _useOPUSCodec(sdp){
     var custom_sdp = sdp;
     custom_sdp += "m=audio 54312 RTP/AVP 101";
@@ -81,4 +95,4 @@ function _useOPUSCodec(sdp){
     custom_sdp += "a=fmtp:101 maxplaybackrate=16000; sprop-maxcapturerate=16000";
     return custom_sdp;
 }
-
+*/

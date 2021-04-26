@@ -59,33 +59,6 @@
 				<option value="client">Usuario 2</option>
 			</select>
 		</div>
-
-		<!--
-		<div class="popup error">
-			<div class="content">
-				<div class="header">
-					<div class="col col2 middle">
-						<div>
-							<img class="logo" src="/static/img/logo.png" alt="Docdoc">
-						</div>
-						<div class="text-right">
-						</div>
-					</div>
-				</div>
-				<div class="enableroom">
-					<h3><b style="color:#f45a69;">Error: Lo sentimos</b> </h3>
-					<p> El navegador no soporta la tecnología para la video conferencia.</p>
-					<p> Por favor verifique que su conexión a internet sea estable.</p>
-					<p> Actualice su navegador, o puede usar lo siguientes navegadores:</p>
-					<ul>
-						<li>Para dispositivos Apple, ingrese desde el navegador Safari.</li>
-						<li>Para otros dispositivos ingrese desde el navegador Chrome o Firefox.</li>
-					</ul>
-					<br>
-				</div>
-			</div>
-		</div>
-		 -->
 		
 		<div id="client" class="signal" style="display:none">
 			<div class="waitfor">
@@ -174,7 +147,9 @@
 					{% endif %}
 				},
 				{% endfor %}
-			]
+			],
+			// iceTransportPolicy: 'relay'
+			// sendSource: 'screen',
 		};
 
 
@@ -210,7 +185,7 @@
 		});
 	</script>
 	
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.4/mobile-detect.min.js"></script>
+	<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mobile-detect@1.4.4/mobile-detect.min.js"></script> -->
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
 	<script src="/static/js/sesion/sesion_info.js?v=1"></script>
 
@@ -221,9 +196,9 @@
 	<script src="/static/js/sesion/iosignaling.js"></script>
 	<script src="/static/js/sesion/createpeer.js"></script>
 	<script src="/static/js/sesion/main.js"></script>
+	{#
 	<script src="/static/js/sesion_api.js?ver=2.10.20"></script>
 	
-	{#
 	<script src="/static/js/sesion_verify.js?ver=2.10.20"></script>
 	<script src="/static/js/sesion_config.js?ver=2.10.20"></script>
 	<script src="/static/js/sesion.js?ver=2.10.20"></script>

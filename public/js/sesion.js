@@ -131,6 +131,7 @@ io.on('signaling_message', async ({data: {description, candidate}}) => {
             }
             if( description.type == "offer" ){
                 const answer = await pc.createAnswer();
+                console.log(answer);
                 await pc.setLocalDescription(answer);
                 io.emit('signal', {description: pc.localDescription, room: SIGNAL_ROOM});
             }
@@ -193,6 +194,7 @@ function startSignaling() {
             makingOffer = true;
             pc.createOffer(sdpConstraints)
             .then(function(offer){
+                console.log(offer);
                 if (pc.signalingState != "stable") return;
                 return pc.setLocalDescription(offer);
             })

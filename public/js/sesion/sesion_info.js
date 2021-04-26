@@ -136,6 +136,68 @@ var INFO =  {
         sendInfoServer(data);
     },
 
+    browser: function(message){
+        var data = {
+            code: '016',
+            message: message,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    offer: function(sdp){
+        var data = {
+            code: '017',
+            message: sdp,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    answer: function(sdp){
+        var data = {
+            code: '018',
+            message: sdp,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    ice_state: function(state){
+        var data = {
+            code: '019',
+            message: state,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    ontrack: function(state){
+        var data = {
+            code: '020',
+            message: state,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    onstream: function(){
+        var data = {
+            code: '021',
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
+    stats: function(message){
+        var data = {
+            code: '022',
+            message: message,
+            user: me.id
+        };
+        sendInfoServer(data);
+    },
+
     socket_io_error: function(message){
         var data = {
             code: '400',
