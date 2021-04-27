@@ -38,22 +38,25 @@ nunjucks.configure('views', {
 	express: app
 })
 
-app.get('/', function(req, res){
+app.get('/', async function(req, res){
+    try{
 
-    const accountSid = "AC08c974e15c6d582b34e82aeb43c4827e"; //process.env.TWILIO_ID;
-    const authToken  = "0e19040d4e7d556afbc7cf492c1495e7"; // process.env.TWILIO_TOKEN;
+    const accountSid = process.env.TWILIO_ID;
+    const authToken  = process.env.TWILIO_TOKEN; // "0e19040d4e7d556afbc7cf492c1495e7"; // process.env.TWILIO_TOKEN;
     const client = require('twilio')(accountSid, authToken);
     
     //{ttl: 3600} crea un token por 1 hora
-    client.tokens.create({ttl: 3600}).then(token =>{
-        const params = {
-            name: "Deiby",
-            token: token.iceServers
-        }
- 
-        res.render('index.html', params);
-    });
-    /**/
+    const token = await client.tokens.create(); 
+    
+    const params = {
+        name: "Deiby",
+        token: token.iceServers
+    }
+
+    res.render('index.html', params);
+    }catch(err){
+        console.log(err);
+    }
     //res.render('index.html', {name:'', token:[]});
 });
 
