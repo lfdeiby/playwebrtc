@@ -41,8 +41,8 @@ nunjucks.configure('views', {
 app.get('/', async function(req, res){
     try{
 
-    const accountSid = process.env.TWILIO_ID;
-    const authToken  = process.env.TWILIO_TOKEN; // "0e19040d4e7d556afbc7cf492c1495e7"; // process.env.TWILIO_TOKEN;
+    const accountSid = process.env.TWILIOID;
+    const authToken  = process.env.TWILIOTOKEN; // "0e19040d4e7d556afbc7cf492c1495e7"; // process.env.TWILIO_TOKEN;
     const client = require('twilio')(accountSid, authToken);
     
     //{ttl: 3600} crea un token por 1 hora
